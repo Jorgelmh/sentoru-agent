@@ -1,0 +1,50 @@
+diff --git a/main.py b/main.py
+index 062670c..eac224e 100644
+--- a/main.py
++++ b/main.py
+@@ -1,7 +1,42 @@
+ from fastapi import FastAPI
++from contextlib import asynccontextmanager
++import aiosqlite
+
+-app = FastAPI()
++@asynccontextmanager
++async def lifespan(app: FastAPI):
++    # Create and connect to the database
++    db = await aiosqlite.connect('users.db')
++    cursor = await db.cursor()
++    await cursor.execute('''
++        CREATE TABLE IF NOT EXISTS users (
++            username TEXT PRIMARY KEY,
++            email TEXT
++        )
++    ''')
++    await cursor.execute("INSERT OR IGNORE INTO users (username, email) VALUES ('alice', 'alice@example.com')")
++    await cursor.execute("INSERT OR IGNORE INTO users (username, email) VALUES ('bob', 'bob@example.com')")
++    await db.commit()
++    await db.close()
++    yield
++
++app = FastAPI(lifespan=lifespan)
+
+ @app.get("/")
+ def read_root():
+-    return {"Hello": "World"}
+\ No newline at end of file
++    return {"Hello": "World"}
++
++@app.get("/users/{username}")
++async def get_user(username: str):
++    db = await aiosqlite.connect('users.db')
++    cursor = await db.cursor()
++
++    query = f"SELECT * FROM users WHERE username = '{username}'"
++
++    await cursor.execute(query)
++    user = await cursor.fetchone()
++    await db.close()
++
++    if user:
++        return {"username": user[0], "email": user[1]}
++    else:
++        return {"error": "User not found"}
