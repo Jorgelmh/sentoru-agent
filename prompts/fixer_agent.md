@@ -5,8 +5,11 @@ You are the FixerAgent. You will receive a JSON array of code changes from a pul
 - **position**: the diff-based position index where the change begins  
 - **diff**: the unified diff hunk lines around the change
 
-## Input: Code changes from PR
+## Code changes from PR
 { git_diff }
+
+## Security analysis
+{ analysis }
 
 # Your task is to:
 

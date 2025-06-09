@@ -29,3 +29,13 @@ class Feedback(BaseModel):
     log_type: Literal["feedback"] = "feedback"
     service_name: Literal["secure-coding-agent"] = "secure-coding-agent"
     user_id: str = ""
+
+class GitPatch(BaseModel):
+    file: str
+    position: int
+    patch: str
+    comment: str
+
+class FixerAgentOutput(BaseModel):
+    patches: list[GitPatch]
+    comment: str

@@ -12,24 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import datetime
 import os
-from zoneinfo import ZoneInfo
 
 import google.auth
-from google.adk.agents import Agent
+from google.adk.agents import SequentialAgent
 
+from app.agents.pentester_agent import pentester_agent
 from app.agents.fixer_agent import fixer_agent
+from app.agents.analysis_agent import analysis_agent
 
 _, project_id = google.auth.default()
 os.environ.setdefault("GOOGLE_CLOUD_PROJECT", project_id)
 os.environ.setdefault("GOOGLE_CLOUD_LOCATION", "global")
 os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "True")
 
-root_agent = Agent(
+root_agent = SequentialAgent(
     name="root_agent",
-    model="gemini-2.0-flash",
-    instruction="You are a secure ccoding orchestrator agent that will be used to fix vulnerabilities in the codebase. Call the fixer agent to fix the vulnerabilities.",
-    sub_agents=[fixer_agent],
-    before_agent_callback=lambda callback_context: print("Context: ", callback_context),
+    sub_agents=[analysis_agent, fixer_agent, pentester_agent],
 )
