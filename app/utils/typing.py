@@ -39,3 +39,8 @@ class GitPatch(BaseModel):
 class FixerAgentOutput(BaseModel):
     patches: list[GitPatch]
     comment: str
+
+class PenetrationTest(BaseModel):
+    test_file_path: str
+    test_code: str
+    explanation: str
