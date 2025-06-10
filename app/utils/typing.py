@@ -27,7 +27,7 @@ class Feedback(BaseModel):
     text: str | None = ""
     invocation_id: str
     log_type: Literal["feedback"] = "feedback"
-    service_name: Literal["secure-coding-agent"] = "secure-coding-agent"
+    service_name: Literal["sentoku-agent"] = "sentoku-agent"
     user_id: str = ""
 
 class GitPatch(BaseModel):

@@ -1,5 +1,5 @@
 # Project name used for resource naming
-project_name = "secure-coding-agent"
+project_name = "sentoku-agent"
 
 # Your Dev Google Cloud project id
 dev_project_id = "your-dev-project-id"

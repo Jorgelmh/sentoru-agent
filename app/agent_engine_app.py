@@ -156,7 +156,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--agent-name",
-        default="secure-coding-agent",
+        default="sentoku-agent",
         help="Name for the agent engine",
     )
     parser.add_argument(

@@ -58,7 +58,7 @@ class CloudTraceLoggingSpanExporter(CloudTraceSpanExporter):
         self.logger = self.logging_client.logger(__name__)
         self.storage_client = storage_client or storage.Client(project=self.project_id)
         self.bucket_name = (
-            bucket_name or f"{self.project_id}-secure-coding-agent-logs-data"
+            bucket_name or f"{self.project_id}-sentoku-agent-logs-data"
         )
         self.bucket = self.storage_client.bucket(self.bucket_name)
 
@@ -90,7 +90,7 @@ class CloudTraceLoggingSpanExporter(CloudTraceSpanExporter):
                 span_dict,
                 labels={
                     "type": "agent_telemetry",
-                    "service_name": "secure-coding-agent",
+                    "service_name": "sentoku-agent",
                 },
                 severity="INFO",
             )
