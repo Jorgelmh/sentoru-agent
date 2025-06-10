@@ -1,0 +1,9 @@
+name: Pull requests to Main
+
+on:
+  pull_request: 
+    branches: [main]
+
+jobs:
+  tests-and-linter:
+    uses: ./.github/workflows/_tests_and_code_quality.yml

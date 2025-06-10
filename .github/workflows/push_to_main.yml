@@ -1,0 +1,20 @@
+name: Push to main
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  ci-jobs:
+    uses: ./.github/workflows/_tests_and_code_quality.yml
+
+  deploy:
+    needs:
+      - ci-jobs
+    uses: ./.github/workflows/_deploy_to_vertex.yml
+    secrets: inherit
