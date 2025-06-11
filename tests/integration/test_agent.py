@@ -21,7 +21,7 @@ from google.genai import types
 from app.agent import root_agent
 
 
-def test_agent_stream() -> None:
+async def test_agent_stream() -> None:
     """
     Integration test for the agent stream functionality.
     Tests that the agent returns valid streaming responses.
@@ -29,7 +29,7 @@ def test_agent_stream() -> None:
 
     session_service = InMemorySessionService()
 
-    session = session_service.create_session(user_id="test_user", app_name="test")
+    session = await session_service.create_session(user_id="test_user", app_name="test")
     runner = Runner(agent=root_agent, session_service=session_service, app_name="test")
 
     message = types.Content(

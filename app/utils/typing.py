@@ -30,15 +30,18 @@ class Feedback(BaseModel):
     service_name: Literal["sentoru-agent"] = "sentoru-agent"
     user_id: str = ""
 
+
 class GitPatch(BaseModel):
     file: str
     position: int
     patch: str
     comment: str
 
+
 class FixerAgentOutput(BaseModel):
     patches: list[GitPatch]
     comment: str
+
 
 class PenetrationTest(BaseModel):
     test_file_path: str

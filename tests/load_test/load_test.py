@@ -89,4 +89,4 @@ class ChatStreamUser(HttpUser):
                     context={},
                 )
             else:
-                response.failure(f"Unexpected status code: {response.status_code}")
+                response.failure(f"Unexpected status code: {response.status_code}")  # type: ignore

@@ -1,8 +1,9 @@
 import os
+
 from google.adk.agents import LlmAgent
-from app.utils.util import load_prompt
 
 from app.utils.typing import FixerAgentOutput
+from app.utils.util import load_prompt
 
 fixer_agent = LlmAgent(
     name="VulnerabilityFixerAgent",

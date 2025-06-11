@@ -17,14 +17,14 @@ import os
 import google.auth
 from google.adk.agents import SequentialAgent
 
-from app.agents.pentester_agent import pentester_agent
-from app.agents.fixer_agent import fixer_agent
 from app.agents.analysis_agent import analysis_agent
+from app.agents.fixer_agent import fixer_agent
+from app.agents.pentester_agent import pentester_agent
 
 _, project_id = google.auth.default()
-os.environ.setdefault("GOOGLE_CLOUD_PROJECT", project_id)
-os.environ.setdefault("GOOGLE_CLOUD_LOCATION", "global")
-os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "True")
+os.environ.setdefault("GOOGLE_CLOUD_PROJECT", project_id)  # type: ignore
+os.environ.setdefault("GOOGLE_CLOUD_LOCATION", "global")  # type: ignore
+os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "True")  # type: ignore
 
 root_agent = SequentialAgent(
     name="root_agent",

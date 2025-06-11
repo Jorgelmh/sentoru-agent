@@ -55,7 +55,7 @@ class AgentEngineApp(AdkApp):
         feedback_obj = Feedback.model_validate(feedback)
         self.logger.log_struct(feedback_obj.model_dump(), severity="INFO")
 
-    def register_operations(self) -> Mapping[str, Sequence]:
+    def register_operations(self) -> Mapping[str, Sequence]:  # type: ignore
         """Registers the operations of the Agent.
 
         Extends the base operations to include feedback registration functionality.
@@ -69,7 +69,7 @@ class AgentEngineApp(AdkApp):
         template_attributes = self._tmpl_attrs
         return self.__class__(
             agent=copy.deepcopy(template_attributes.get("agent")),
-            enable_tracing=template_attributes.get("enable_tracing"),
+            enable_tracing=template_attributes.get("enable_tracing"),  # type: ignore
             session_service_builder=template_attributes.get("session_service_builder"),
             artifact_service_builder=template_attributes.get(
                 "artifact_service_builder"
@@ -83,10 +83,15 @@ def deploy_agent_engine_app(
     location: str,
     agent_name: str | None = None,
     requirements_file: str = ".requirements.txt",
-    extra_packages: list[str] = ["./app"],
-    env_vars: dict[str, str] = {},
+    extra_packages: list[str] | None = None,
+    env_vars: dict[str, str] | None = None,
 ) -> agent_engines.AgentEngine:
     """Deploy the agent engine app to Vertex AI."""
+
+    if extra_packages is None:
+        extra_packages = ["./app"]
+    if env_vars is None:
+        env_vars = {}
 
     staging_bucket = f"gs://{project}-agent-engine"
 
@@ -195,7 +200,7 @@ if __name__ == "__main__":
     """)
 
     deploy_agent_engine_app(
-        project=args.project,
+        project=args.project,  # type: ignore
         location=args.location,
         agent_name=args.agent_name,
         requirements_file=args.requirements_file,
