@@ -37,6 +37,7 @@ jobs:
       - name: Trigger deployment
         run: |
           uv run app/agent_engine_app.py \
+            --agent-name sentoru-agent \
             --project ${{ secrets.GCP_PROJECT_ID }} \
             --location ${{ secrets.GCP_REGION }} \
             --set-env-vars="COMMIT_SHA=${{ github.sha }}" 
