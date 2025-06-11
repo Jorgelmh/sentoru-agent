@@ -15,7 +15,7 @@
 variable "project_name" {
   type        = string
   description = "Project name used as a base for resource naming"
-  default     = "sentoku-agent"
+  default     = "sentoru-agent"
 }
 
 variable "prod_project_id" {
@@ -52,7 +52,7 @@ variable "repository_name" {
 variable "telemetry_logs_filter" {
   type        = string
   description = "Log Sink filter for capturing telemetry data. Captures logs with the `traceloop.association.properties.log_type` attribute set to `tracing`."
-  default     = "labels.service_name=\"sentoku-agent\" labels.type=\"agent_telemetry\""
+  default     = "labels.service_name=\"sentoru-agent\" labels.type=\"agent_telemetry\""
 }
 
 variable "feedback_logs_filter" {

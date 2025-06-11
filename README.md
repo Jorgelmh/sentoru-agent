@@ -1,4 +1,4 @@
-# sentoku-agent
+# sentoru-agent
 
 A base ReAct agent built with Google's Agent Development Kit (ADK)
 Agent generated with [`googleCloudPlatform/agent-starter-pack`](https://github.com/GoogleCloudPlatform/agent-starter-pack) version `0.4.4`
@@ -8,7 +8,7 @@ Agent generated with [`googleCloudPlatform/agent-starter-pack`](https://github.c
 This project is organized as follows:
 
 ```
-sentoku-agent/
+sentoru-agent/
 ├── app/                 # Core application code
 │   ├── agent.py         # Main agent logic
 │   ├── agent_engine_app.py # Agent Engine application logic

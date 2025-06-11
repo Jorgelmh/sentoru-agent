@@ -1,5 +1,5 @@
 # Project name used for resource naming
-project_name = "sentoku-agent"
+project_name = "sentoru-agent"
 
 # Your Production Google Cloud project id
 prod_project_id = "your-production-project-id"
@@ -11,10 +11,10 @@ staging_project_id = "your-staging-project-id"
 cicd_runner_project_id = "your-cicd-project-id"
 
 # Name of the host connection you created in Cloud Build
-host_connection_name = "git-sentoku-agent"
+host_connection_name = "git-sentoru-agent"
 
 # Name of the repository you added to Cloud Build
-repository_name = "repo-sentoku-agent"
+repository_name = "repo-sentoru-agent"
 
 # The Google Cloud region you will use to deploy the infrastructure
 region = "europe-west1-b"
