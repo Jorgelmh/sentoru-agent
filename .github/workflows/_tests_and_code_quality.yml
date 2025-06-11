@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-python@v5
       
       - name: Install Project
-        run: uv sync
+        run: uv sync --dev
 
       - name: Run pyright
         run: uv run pyright .
@@ -41,7 +41,7 @@ jobs:
         uses: actions/setup-python@v5
 
       - name: Install Project
-        run: uv sync
+        run: uv sync --dev
 
       - name: Run Ruff check
         run: uv run ruff check --diff .
@@ -62,7 +62,7 @@ jobs:
         uses: actions/setup-python@v5
 
       - name: Install Project
-        run: uv sync
+        run: uv sync --dev
 
       - name: Run Ruff check
         run: uv run ruff format --diff .
