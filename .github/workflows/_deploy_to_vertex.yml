@@ -40,4 +40,4 @@ jobs:
             --agent-name sentoru-agent \
             --project ${{ secrets.GCP_PROJECT_ID }} \
             --location ${{ secrets.GCP_REGION }} \
-            --set-env-vars="COMMIT_SHA=${{ github.sha }}" 
+            --set-env-vars="SAFETY_API_KEY=${{ secrets.SAFETY_API_KEY }},LLM_DEPLOYMENT=gemini-2.0-flash" 

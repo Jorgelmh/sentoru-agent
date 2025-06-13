@@ -9,7 +9,7 @@ You are the FixerAgent. You will receive a JSON array of code changes from a pul
 { git_diff }
 
 ## Security analysis
-{ analysis }
+{ analysis? }
 
 # Your task is to:
 
