@@ -13,7 +13,6 @@
 # limitations under the License.
 
 # mypy: disable-error-code="attr-defined"
-import copy
 import datetime
 import json
 import logging
