@@ -34,6 +34,10 @@ jobs:
       - name: Install Project
         run: uv sync --frozen
 
+      - name: Prepare requirements.txt
+        run: |
+          uv export --no-hashes --no-header --no-dev --no-emit-project --frozen > .requirements.txt
+
       - name: Trigger deployment
         run: |
           uv run app/agent_engine_app.py \
