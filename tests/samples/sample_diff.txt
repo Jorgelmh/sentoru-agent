@@ -1,0 +1,252 @@
+diff --git a/** b/**
+new file mode 100644
+index 0000000..ca4774f
+--- /dev/null
++++ b/**
+@@ -0,0 +1,77 @@
++import pytest
++import aiosqlite
++from fastapi.testclient import TestClient
++from main import app
++
++
++@pytest.fixture
++async def test_db():
++    db = await aiosqlite.connect('test.db')
++    cursor = await db.cursor()
++    await cursor.execute('''
++        CREATE TABLE IF NOT EXISTS users (
++            username TEXT PRIMARY KEY,
++            email TEXT
++        )
++    ''')
++    await cursor.execute("INSERT OR IGNORE INTO users (username, email) VALUES ('alice', 'alice@example.com')")
++    await cursor.execute("INSERT OR IGNORE INTO users (username, email) VALUES ('bob', 'bob@example.com')")
++    await db.commit()
++    yield db
++    await cursor.execute("DROP TABLE IF EXISTS users")
++    await db.commit()
++    await db.close()
++
++
++@pytest.fixture
++def test_client():
++    return TestClient(app)
++
++
++async def insert_user(db, username, email):
++    cursor = await db.cursor()
++    await cursor.execute("INSERT INTO users (username, email) VALUES (?, ?)", (username, email))
++    await db.commit()
++
++
++@pytest.mark.asyncio
++async def test_get_user_valid(test_db, test_client):
++    # Test case 1: Verify retrieving a valid user.
++    response = test_client.get("/users/alice")
++    assert response.status_code == 200
++    assert response.json() == {"username": "alice", "email": "alice@example.com"}
++
++
++@pytest.mark.asyncio
++async def test_get_user_invalid(test_db, test_client):
++    # Test case 2: Verify retrieving an invalid user.
++    response = test_client.get("/users/nonexistent")
++    assert response.status_code == 200
++    assert response.json() == {"error": "User not found"}
++
++
++@pytest.mark.asyncio
++async def test_sql_injection_attempt_1(test_db, test_client):
++    # Test case 3: Attempt SQL injection with a simple payload.
++    # The fix should prevent this from returning unintended data.
++    response = test_client.get("/users/' OR '1'='1")
++    assert response.status_code == 200
++    assert response.json() == {"error": "User not found"} or response.json() == {'username': "' OR '1'='1", 'email': None}
++
++
++@pytest.mark.asyncio
++async def test_sql_injection_attempt_2(test_db, test_client):
++    # Test case 4: Attempt SQL injection with a different payload.
++    # The fix should prevent this from returning unintended data.
++    response = test_client.get("/users/admin'--")
++    assert response.status_code == 200
++    # Expecting user not found or the literal string. The important part is that injection doesn't work
++    assert response.json() == {"error": "User not found"} or response.json() == {'username': 'admin', 'email': None}
++
++
++@pytest.mark.asyncio
++async def test_sql_injection_attempt_3(test_db, test_client):
++    # Test case 5: Attempt SQL injection that might return all users.
++    response = test_client.get("/users/' OR username LIKE '%' --")
++    assert response.status_code == 200
++    assert response.json() == {"error": "User not found"} or response.json() == {'username': "' OR username LIKE '%' --", 'email': None}
+\ No newline at end of file
+diff --git a/main.py b/main.py
+index 062670c..7d3cf7d 100644
+--- a/main.py
++++ b/main.py
+@@ -1,7 +1,43 @@
+ from fastapi import FastAPI
++from contextlib import asynccontextmanager
++import aiosqlite
++
++@asynccontextmanager
++async def lifespan(app: FastAPI):
++    # Create and connect to the database
++    db = await aiosqlite.connect('users.db')
++    cursor = await db.cursor()
++    await cursor.execute('''
++        CREATE TABLE IF NOT EXISTS users (
++            username TEXT PRIMARY KEY,
++            email TEXT
++        )
++    ''')
++    await cursor.execute("INSERT OR IGNORE INTO users (username, email) VALUES ('alice', 'alice@example.com')")
++    await cursor.execute("INSERT OR IGNORE INTO users (username, email) VALUES ('bob', 'bob@example.com')")
++    await db.commit()
++    await db.close()
++    yield
++
++app = FastAPI(lifespan=lifespan)
+
+-app = FastAPI()
+
+ @app.get("/")
+ def read_root():
+-    return {"Hello": "World"}
+\ No newline at end of file
++    return {"Hello": "World"}
++
++@app.get("/users/{username}")
++async def get_user(username: str):
++    db = await aiosqlite.connect('users.db')
++    cursor = await db.cursor()
++
++    query = f"SELECT * FROM users WHERE username = '{username}'"
++
++    await cursor.execute(query)
++    user = await cursor.fetchone()
++    await db.close()
++
++    if user:
++        return {"username": user[0], "email": user[1]}
++    else:
++        return {"error": "User not found"}
+\ No newline at end of file
+diff --git a/requirements.txt b/requirements.txt
+index c1afdce..0272f4a 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -1,2 +1,4 @@
+ fastapi
+-uvicorn
+\ No newline at end of file
++uvicorn
++aiosqlite
++jinja2==3.1.4
+\ No newline at end of file
+diff --git a/tests/test_security_sql_injection.py b/tests/test_security_sql_injection.py
+new file mode 100644
+index 0000000..21e3712
+--- /dev/null
++++ b/tests/test_security_sql_injection.py
+@@ -0,0 +1,93 @@
++import pytest
++import aiosqlite
++from fastapi.testclient import TestClient
++from main import app
++
++
++@pytest.fixture
++async def test_db():
++    db = await aiosqlite.connect('test.db')
++    cursor = await db.cursor()
++    await cursor.execute('''
++        CREATE TABLE IF NOT EXISTS users (
++            username TEXT PRIMARY KEY,
++            email TEXT
++        )
++    ''')
++    await cursor.execute("INSERT OR IGNORE INTO users (username, email) VALUES ('alice', 'alice@example.com')")
++    await cursor.execute("INSERT OR IGNORE INTO users (username, email) VALUES ('bob', 'bob@example.com')")
++    await db.commit()
++    yield db
++    await cursor.execute("DROP TABLE IF EXISTS users")
++    await db.commit()
++    await db.close()
++
++
++@pytest.fixture
++def test_client():
++    return TestClient(app)
++
++
++async def insert_user(db, username, email):
++    cursor = await db.cursor()
++    await cursor.execute("INSERT INTO users (username, email) VALUES (?, ?)", (username, email))
++    await db.commit()
++
++
++@pytest.mark.asyncio
++async def test_get_user_valid(test_db, test_client):
++    # Test case 1: Verify retrieving a valid user.
++    response = test_client.get("/users/alice")
++    assert response.status_code == 200
++    assert response.json() == {"username": "alice", "email": "alice@example.com"}
++
++
++@pytest.mark.asyncio
++async def test_get_user_invalid(test_db, test_client):
++    # Test case 2: Verify retrieving an invalid user.
++    response = test_client.get("/users/nonexistent")
++    assert response.status_code == 200
++    assert response.json() == {"error": "User not found"}
++
++
++@pytest.mark.asyncio
++async def test_sql_injection_attempt_1(test_db, test_client):
++    # Test case 3: Attempt SQL injection with a simple payload.
++    # The fix should prevent this from returning unintended data.
++    response = test_client.get("/users/' OR '1'='1")
++    assert response.status_code == 200
++    assert response.json() == {"error": "User not found"}
++
++
++@pytest.mark.asyncio
++async def test_sql_injection_attempt_2(test_db, test_client):
++    # Test case 4: Attempt SQL injection with a different payload.
++    # The fix should prevent this from returning unintended data.
++    response = test_client.get("/users/admin'--")
++    assert response.status_code == 200
++    # Expecting user not found or the literal string. The important part is that injection doesn't work
++    assert response.json() == {"error": "User not found"}
++
++
++@pytest.mark.asyncio
++async def test_sql_injection_attempt_3(test_db, test_client):
++    # Test case 5: Attempt SQL injection that might return all users.
++    response = test_client.get("/users/' OR username LIKE '%' --")
++    assert response.status_code == 200
++    assert response.json() == {"error": "User not found"}
++
++
++@pytest.mark.asyncio
++async def test_sql_injection_attempt_4(test_db, test_client):
++    # Test case 6: Attempt SQL injection to cause an error and potentially reveal database information.
++    response = test_client.get("/users/'; DROP TABLE users; --")
++    assert response.status_code == 200
++    assert response.json() == {"error": "User not found"}
++
++
++@pytest.mark.asyncio
++async def test_sql_injection_attempt_5(test_db, test_client):
++    # Test case 7: Attempt SQL injection to select a specific user using a crafted payload.
++    response = test_client.get("/users/alice' AND email LIKE 'alice@example.com' --")
++    assert response.status_code == 200
++    assert response.json() == {"error": "User not found"}
+\ No newline at end of file
+diff --git a/users.db b/users.db
+new file mode 100644
+index 0000000..3198826
+Binary files /dev/null and b/users.db differ
