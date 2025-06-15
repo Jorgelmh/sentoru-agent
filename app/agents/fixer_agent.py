@@ -7,7 +7,7 @@ from app.utils.util import format_git_diff_cb, load_prompt
 
 fixer_agent = LlmAgent(
     name="VulnerabilityFixerAgent",
-    model=os.environ.get("LLM_DEPLOYMENT", ""),
+    model=os.environ.get("LLM_DEPLOYMENT", "gemini-2.0-flash"),
     instruction=load_prompt("fixer_agent"),
     description="Suggests or generates code changes to fix detected vulnerabilities.",
     output_key="fixed_code_patches",

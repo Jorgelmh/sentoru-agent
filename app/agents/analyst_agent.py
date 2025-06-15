@@ -7,7 +7,7 @@ from app.utils.util import load_prompt
 
 analyst_agent = LlmAgent(
     name="AnalystAgent",
-    model=os.environ.get("LLM_DEPLOYMENT", ""),
+    model=os.environ.get("LLM_DEPLOYMENT", "gemini-2.0-flash"),
     instruction=load_prompt("analyst_agent"),
     description="Analyzes the codebase and identifies vulnerabilities.",
     tools=[get_safety_API_tool()],
