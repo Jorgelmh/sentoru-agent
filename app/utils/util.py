@@ -2,6 +2,7 @@ from pathlib import Path
 
 from google.adk.agents.callback_context import CallbackContext
 from google.cloud import logging as google_cloud_logging
+from unidiff import PatchSet
 
 logging_client = google_cloud_logging.Client()
 logger = logging_client.logger(__name__)
@@ -21,39 +22,57 @@ def add_git_diff_to_state(callback_context: CallbackContext) -> None:
     return None
 
 
-def add_line_numbers_to_diff(diff_text: str) -> str:
-    """Adds line numbers to each line in the diff hunk."""
-    lines = diff_text.splitlines()
-    processed_diff = []
-    in_hunk = False
-    line_counter = 1
+def format_patch_for_display(patch: PatchSet) -> str:
+    """
+    Formats a PatchSet object into a markdown string, showing only added lines.
 
-    for line in lines:
-        if line.startswith("diff --git"):
-            in_hunk = False
-            processed_diff.append(line)
-        elif line.startswith("@@"):
-            in_hunk = True
-            line_counter = 1
-            processed_diff.append(line)
-        elif in_hunk:
-            # Any line inside a hunk that is not a 'no newline' message should be numbered.
-            if line.startswith(
-                "\\"
-            ):  # In diff, this is for '\ No newline at end of file'
-                processed_diff.append(line)
-            else:
-                processed_diff.append(f"{line_counter:<4}{line}")
-                line_counter += 1
-        else:
-            processed_diff.append(line)
+    Args:
+        patch: A PatchSet object from the unidiff library.
 
-    return "\n".join(processed_diff)
+    Returns:
+        A markdown-formatted string of the diff's added lines.
+    """
+    markdown_output = []
+    for patched_file in patch:
+        # Check if there are any added lines in the file to determine if we should include it
+        if patched_file.is_binary_file or not any(
+            line.is_added for hunk in patched_file for line in hunk
+        ):
+            continue
+
+        # Add a markdown header for the file path
+        markdown_output.append(f"### `{patched_file.path}`")
+        markdown_output.append("```diff")
+
+        for hunk in patched_file:
+            # Only include hunks that have added lines
+            if not any(line.is_added for line in hunk):
+                continue
+
+            # Simplified hunk header showing only target file info
+            hunk_header_info = f"@@ -... +{hunk.target_start},{hunk.target_length} @@"
+            if hunk.section_header:
+                hunk_header_info += f" {hunk.section_header}"
+            markdown_output.append(hunk_header_info)
+
+            for line in hunk:
+                if line.is_added:
+                    line_text = line.value.rstrip("\r\n")
+                    markdown_output.append(f"{line.target_line_no: <4} {line_text}")
+
+        markdown_output.append("```")
+        markdown_output.append("")  # For spacing between files
+
+    return "\n".join(markdown_output)
 
 
 def format_git_diff_cb(callback_context: CallbackContext) -> None:
-    """Formats the git diff to add line numbers."""
-    diff_text = callback_context.state["git_diff"]
-    formatted_diff = add_line_numbers_to_diff(diff_text)
+    """
+    Formats the git diff into a markdown string.
+    """
+    if "git_diff" not in callback_context.state.to_dict():
+        return None
+    path_set = PatchSet(callback_context.state["git_diff"])
+    formatted_diff = format_patch_for_display(path_set)
     callback_context.state["git_diff"] = formatted_diff
     return None

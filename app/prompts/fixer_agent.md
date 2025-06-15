@@ -6,7 +6,7 @@ You are the FixerAgent. You will receive a JSON array of code changes from a pul
 - **diff**: the unified diff hunk lines around the change
 
 ## Code changes from PR
-The provided git diff has line numbers at the start of each line within a hunk. Use these for the 'position' index.
+The provided git diff has line numbers at the start of each line within a hunk. Use these for the 'start_line' and 'end_line' indices.
 { git_diff }
 
 ## Security analysis
@@ -23,7 +23,7 @@ The provided git diff has line numbers at the start of each line within a hunk. 
    (three backticks, the word `suggestion`, your code, then three backticks; no extra indentation).  
 4. For each patch, include:
    - The original **file** path.  
-   - The original **position** index. The starting line number of the suggested changes.
+   - The **`start_line`** and **`end_line`** numbers for the suggestion. This range defines the block of code to be replaced and can span multiple lines. **Crucially, this range must only include lines that are present in the provided `git_diff` for that file.** Feel free to carry multiline changes to avoid chaning many adjacent lines separately.
    - The **patch** string containing the fenced suggestion. **Do not include the line numbers inside the suggestion block.**
    - A **comment** that both:
      1. Justifies *why* the original code was vulnerable, and  
@@ -52,10 +52,11 @@ diff --git a/src/main.py b/src/main.py
 
 ## Expected Output Explanation:
 
-Based on the input diff, you would identify the SQL injection vulnerability. The vulnerable code starts at **line 11**.
+Based on the input diff, you would identify the SQL injection vulnerability. The vulnerable code spans from **line 11 to line 12**.
 
 - **`file`**: `"src/main.py"`
-- **`position`**: `11`
+- **`start_line`**: `11`
+- **`end_line`**: `12`
 - **`patch`**: A string containing the suggestion block with the corrected, secure code.
   ```suggestion
     query = "SELECT * FROM users WHERE id = %s"

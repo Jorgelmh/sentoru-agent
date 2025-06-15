@@ -33,7 +33,8 @@ class Feedback(BaseModel):
 
 class GitPatch(BaseModel):
     file: str
-    position: int
+    start_line: int
+    end_line: int
     patch: str
     comment: str
 
