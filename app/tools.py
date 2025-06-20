@@ -21,7 +21,7 @@ def get_rag_vulnerability_knowledge_tool() -> VertexAiRagRetrieval:
             "about common software vulnerabilities, including OWASP Top 10, CWE Top, and "
             "Python-specific security issues. This is useful for understanding, explaining, "
             "or remediating vulnerabilities found in code."
-            "The query should be a short explanation of the new code changes that are being made."
+            "The query should be a short general explanation of the new code changes that are being introduced, as well as identified vulnerabilities."
         ),
         rag_resources=[
             rag.RagResource(
@@ -30,7 +30,7 @@ def get_rag_vulnerability_knowledge_tool() -> VertexAiRagRetrieval:
                 )  # Set this env var to your security corpus
             )
         ],
-        similarity_top_k=10,
+        similarity_top_k=5,
         vector_distance_threshold=0.6,
     )
 
