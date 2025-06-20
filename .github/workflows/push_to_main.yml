@@ -12,6 +12,7 @@ permissions:
 jobs:
   ci-jobs:
     uses: ./.github/workflows/_tests_and_code_quality.yml
+    secrets: inherit
 
   deploy:
     needs:

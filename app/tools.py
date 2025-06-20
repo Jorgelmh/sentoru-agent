@@ -3,7 +3,11 @@ import os
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
 from google.adk.tools.retrieval.vertex_ai_rag_retrieval import VertexAiRagRetrieval
+from google.cloud import logging as google_cloud_logging
 from vertexai.preview import rag
+
+logging_client = google_cloud_logging.Client()
+logger = logging_client.logger(__name__)
 
 
 def get_rag_vulnerability_knowledge_tool() -> VertexAiRagRetrieval:
