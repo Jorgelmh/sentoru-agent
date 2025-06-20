@@ -1,11 +1,7 @@
 from pathlib import Path
 
 from google.adk.agents.callback_context import CallbackContext
-from google.cloud import logging as google_cloud_logging
 from unidiff import PatchSet
-
-logging_client = google_cloud_logging.Client()
-logger = logging_client.logger(__name__)
 
 
 def load_prompt(prompt_name: str) -> str:
