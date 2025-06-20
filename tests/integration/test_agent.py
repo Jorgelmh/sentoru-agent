@@ -14,13 +14,12 @@
 
 # mypy: disable-error-code="union-attr"
 from pathlib import Path
-from typing import Dict, Tuple
 
+import pytest
 from google.adk.agents.run_config import RunConfig, StreamingMode
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
-import pytest
 
 from app.agent import root_agent
 
@@ -53,10 +52,10 @@ def runner_with_session(session_service):
     return Runner(agent=root_agent, session_service=session_service, app_name="test")
 
 
-def extract_security_analysis_results(events) -> Tuple[list, Dict, bool, bool, bool]:
+def extract_security_analysis_results(events) -> tuple[list, dict, bool, bool, bool]:
     """
     Helper function to extract security analysis results from agent events.
-    
+
     Returns:
         Tuple of (fixed_code_patches, pen_tests, has_text_content, has_fixed_code_patches, has_pen_tests)
     """
@@ -65,7 +64,7 @@ def extract_security_analysis_results(events) -> Tuple[list, Dict, bool, bool, b
     has_pen_tests = False
     fixed_code_patches = []
     pen_tests = {}
-    
+
     for event in events:
         # Check for text content
         if (
@@ -74,11 +73,11 @@ def extract_security_analysis_results(events) -> Tuple[list, Dict, bool, bool, b
             and any(part.text for part in event.content.parts)
         ):
             has_text_content = True
-            
+
         # Check for state updates with security analysis results
-        if hasattr(event, 'actions') and event.actions:
+        if hasattr(event, "actions") and event.actions:
             actions = event.actions
-            if hasattr(actions, 'state_delta') and actions.state_delta:
+            if hasattr(actions, "state_delta") and actions.state_delta:
                 state_delta = actions.state_delta
                 if "fixed_code_patches" in state_delta:
                     fixed_code_patches = state_delta["fixed_code_patches"]["patches"]
@@ -86,12 +85,20 @@ def extract_security_analysis_results(events) -> Tuple[list, Dict, bool, bool, b
                 if "pen_tests" in state_delta:
                     pen_tests = state_delta["pen_tests"]
                     has_pen_tests = True
-    
-    return fixed_code_patches, pen_tests, has_text_content, has_fixed_code_patches, has_pen_tests
+
+    return (
+        fixed_code_patches,
+        pen_tests,
+        has_text_content,
+        has_fixed_code_patches,
+        has_pen_tests,
+    )
 
 
 @pytest.mark.asyncio
-async def test_agent_stream_with_vulnerabilities(session_service, runner_with_session, vulnerable_git_diff):
+async def test_agent_stream_with_vulnerabilities(
+    session_service, runner_with_session, vulnerable_git_diff
+):
     """
     Integration test for the sentoku agent stream functionality with vulnerable code.
     Tests that the agent returns valid streaming responses for security analysis
@@ -100,15 +107,17 @@ async def test_agent_stream_with_vulnerabilities(session_service, runner_with_se
     # Create session with initial state containing the vulnerable git diff
     user_id = "test_user_vulnerable"
     session = await session_service.create_session(
-        user_id=user_id, 
-        app_name="test",
-        state={"git_diff": vulnerable_git_diff}
+        user_id=user_id, app_name="test", state={"git_diff": vulnerable_git_diff}
     )
-    
+
     # Use a security-focused prompt appropriate for the sentoku agent
     message = types.Content(
-        role="user", 
-        parts=[types.Part.from_text(text="Review PR code changes according to your instructions.")]
+        role="user",
+        parts=[
+            types.Part.from_text(
+                text="Review PR code changes according to your instructions."
+            )
+        ],
     )
 
     events = list(
@@ -122,24 +131,36 @@ async def test_agent_stream_with_vulnerabilities(session_service, runner_with_se
     assert len(events) > 0, "Expected at least one message"
 
     # Extract results using helper function
-    fixed_code_patches, pen_tests, has_text_content, has_fixed_code_patches, has_pen_tests = extract_security_analysis_results(events)
-    
+    (
+        fixed_code_patches,
+        pen_tests,
+        has_text_content,
+        has_fixed_code_patches,
+        has_pen_tests,
+    ) = extract_security_analysis_results(events)
+
     # Basic assertions
     assert has_text_content, "Expected at least one message with text content"
     assert has_fixed_code_patches, "Expected fixed_code_patches in state delta"
     assert has_pen_tests, "Expected pen_tests in state delta"
-    
+
     # Verify the structure of results (should be dictionaries even if empty)
-    assert isinstance(fixed_code_patches, list), "fixed_code_patches should be a list of patches"
+    assert isinstance(fixed_code_patches, list), (
+        "fixed_code_patches should be a list of patches"
+    )
     assert isinstance(pen_tests, dict), "pen_tests should be a dictionary"
-    
+
     # For vulnerable code, we should get non-empty results
-    assert len(fixed_code_patches) > 0, "Expected non-empty fixed_code_patches for vulnerable code"
+    assert len(fixed_code_patches) > 0, (
+        "Expected non-empty fixed_code_patches for vulnerable code"
+    )
     assert len(pen_tests) > 0, "Expected non-empty pen_tests for vulnerable code"
 
 
 @pytest.mark.asyncio
-async def test_agent_stream_with_clean_code(session_service, runner_with_session, clean_git_diff):
+async def test_agent_stream_with_clean_code(
+    session_service, runner_with_session, clean_git_diff
+):
     """
     Integration test for the sentoku agent with clean, secure code.
     Tests that the agent returns empty fixed_code_patches and pen_tests
@@ -148,14 +169,16 @@ async def test_agent_stream_with_clean_code(session_service, runner_with_session
     # Create session with initial state containing the clean git diff
     user_id = "test_user_clean"
     session = await session_service.create_session(
-        user_id=user_id, 
-        app_name="test",
-        state={"git_diff": clean_git_diff}
+        user_id=user_id, app_name="test", state={"git_diff": clean_git_diff}
     )
-    
+
     message = types.Content(
-        role="user", 
-        parts=[types.Part.from_text(text="Review PR code changes according to your instructions.")]
+        role="user",
+        parts=[
+            types.Part.from_text(
+                text="Review PR code changes according to your instructions."
+            )
+        ],
     )
 
     events = list(
@@ -169,14 +192,20 @@ async def test_agent_stream_with_clean_code(session_service, runner_with_session
     assert len(events) > 0, "Expected at least one message"
 
     # Extract results using helper function
-    fixed_code_patches, _, has_text_content, has_fixed_code_patches, _ = extract_security_analysis_results(events)
-    
+    fixed_code_patches, _, has_text_content, has_fixed_code_patches, _ = (
+        extract_security_analysis_results(events)
+    )
+
     # Basic assertions
     assert has_text_content, "Expected at least one message with text content"
     assert has_fixed_code_patches, "Expected fixed_code_patches in state delta"
-    
+
     # Verify the structure of results
-    assert isinstance(fixed_code_patches, list), "fixed_code_patches should be a list of patches"
-    
+    assert isinstance(fixed_code_patches, list), (
+        "fixed_code_patches should be a list of patches"
+    )
+
     # For clean code, we should get empty results
-    assert len(fixed_code_patches) == 0, "Expected empty fixed_code_patches for clean code"
+    assert len(fixed_code_patches) == 0, (
+        "Expected empty fixed_code_patches for clean code"
+    )

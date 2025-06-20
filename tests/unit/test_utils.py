@@ -2,8 +2,8 @@ from unidiff import PatchSet
 
 from app.utils.util import format_patch_for_display
 
-
 # Tests for format_patch_for_display function
+
 
 def test_format_patch_with_added_lines():
     """Test formatting a patch with added lines shows correct markdown and line numbers."""
@@ -21,12 +21,12 @@ index 062670c..eac224e 100644
 
     patch_set = PatchSet(git_diff)
     result = format_patch_for_display(patch_set)
-    
+
     # Check that markdown formatting is applied
     assert "### `main.py`" in result
     assert "```diff" in result
     assert result.endswith("```\n")
-    
+
     # Check that added lines are included with correct line numbers
     assert "2    import aiosqlite" in result
     assert "3    import logging" in result
@@ -55,14 +55,14 @@ index 1234567..abcdefg 100644
 
     patch_set = PatchSet(git_diff)
     result = format_patch_for_display(patch_set)
-    
+
     # Check that both files are included with proper headers
     assert "### `main.py`" in result
     assert "### `config.py`" in result
-    
+
     # Check content from both files
     assert "2    import asyncio" in result
-    assert "2    LOG_LEVEL = \"INFO\"" in result
+    assert '2    LOG_LEVEL = "INFO"' in result
 
 
 def test_format_patch_security_vulnerability_example():
@@ -71,10 +71,9 @@ def test_format_patch_security_vulnerability_example():
 index 062670c..eac224e 100644
 --- a/main.py
 +++ b/main.py
-@@ -3,6 +3,7 @@ async def get_user(username: str):
+@@ -3,5 +3,6 @@ async def get_user(username: str):
      db = await aiosqlite.connect('users.db')
      cursor = await db.cursor()
- 
 +    query = f"SELECT * FROM users WHERE username = '{username}'"
      await cursor.execute(query)
      user = await cursor.fetchone()
@@ -82,11 +81,14 @@ index 062670c..eac224e 100644
 
     patch_set = PatchSet(git_diff)
     result = format_patch_for_display(patch_set)
-    
+
     # Check that the vulnerable line is captured with correct line number
     assert "### `main.py`" in result
-    assert "6        query = f\"SELECT * FROM users WHERE username = '{username}'" in result
-    
+    assert (
+        "5        query = f\"SELECT * FROM users WHERE username = '{username}'"
+        in result
+    )
+
     # Verify markdown structure
     assert "```diff" in result
     assert result.count("```") == 2  # Opening and closing
