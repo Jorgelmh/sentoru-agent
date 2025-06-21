@@ -25,12 +25,12 @@ from opentelemetry.sdk.trace.export import SpanExportResult
 
 
 class CloudTraceLoggingSpanExporter(CloudTraceSpanExporter):
-    """
-    An extended version of CloudTraceSpanExporter that logs span data to Google Cloud Logging
-    and handles large attribute values by storing them in Google Cloud Storage.
+    """An extended version of CloudTraceSpanExporter that logs span data to Google Cloud
+    Logging and handles large attribute values by storing them in Google Cloud Storage.
 
     This class helps bypass the 256 character limit of Cloud Trace for attribute values
-    by leveraging Cloud Logging (which has a 256KB limit) and Cloud Storage for larger payloads.
+    by leveraging Cloud Logging (which has a 256KB limit) and Cloud Storage for larger
+    payloads.
     """
 
     def __init__(
@@ -41,8 +41,7 @@ class CloudTraceLoggingSpanExporter(CloudTraceSpanExporter):
         debug: bool = False,
         **kwargs: Any,
     ) -> None:
-        """
-        Initialize the exporter with Google Cloud clients and configuration.
+        """Initialize the exporter with Google Cloud clients and configuration.
 
         :param logging_client: Google Cloud Logging client
         :param storage_client: Google Cloud Storage client
@@ -61,8 +60,7 @@ class CloudTraceLoggingSpanExporter(CloudTraceSpanExporter):
         self.bucket = self.storage_client.bucket(self.bucket_name)
 
     def export(self, spans: Sequence[ReadableSpan]) -> SpanExportResult:
-        """
-        Export the spans to Google Cloud Logging and Cloud Trace.
+        """Export the spans to Google Cloud Logging and Cloud Trace.
 
         :param spans: A sequence of spans to export
         :return: The result of the export operation
@@ -96,8 +94,7 @@ class CloudTraceLoggingSpanExporter(CloudTraceSpanExporter):
         return super().export(spans)
 
     def store_in_gcs(self, content: str, span_id: str) -> str:
-        """
-        Initiate storing large content in Google Cloud Storage/
+        """Initiate storing large content in Google Cloud Storage/
 
         :param content: The content to store
         :param span_id: The ID of the span
@@ -117,8 +114,7 @@ class CloudTraceLoggingSpanExporter(CloudTraceSpanExporter):
         return f"gs://{self.bucket_name}/{blob_name}"
 
     def _process_large_attributes(self, span_dict: dict, span_id: str) -> dict:
-        """
-        Process large attribute values by storing them in GCS if they exceed the size
+        """Process large attribute values by storing them in GCS if they exceed the size
         limit of Google Cloud Logging.
 
         :param span_dict: The span data dictionary
