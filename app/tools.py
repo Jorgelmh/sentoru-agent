@@ -1,10 +1,14 @@
 import os
 
+from google.adk.agents import LlmAgent
+from google.adk.tools.agent_tool import AgentTool
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
 from google.adk.tools.retrieval.vertex_ai_rag_retrieval import VertexAiRagRetrieval
 from google.cloud import logging as google_cloud_logging
 from vertexai.preview import rag
+
+from app.utils.util import load_prompt
 
 logging_client = google_cloud_logging.Client()
 logger = logging_client.logger(__name__)
@@ -49,3 +53,25 @@ def get_safety_API_tool() -> MCPToolset:
             },
         )
     )
+
+
+def get_orchestrator_agent_tools() -> list:
+    """
+    Returns a list of AgentTool instances for the orchestrator agent.
+    If USE_RAG environment variable is set, returns the search_agent wrapped in AgentTool.
+    Otherwise, returns an empty list.
+
+    Returns:
+        List of AgentTool instances or empty list
+    """
+    if os.environ.get("USE_RAG"):
+        search_agent = LlmAgent(
+            name="SearchAgent",
+            model=os.environ.get("LLM_DEPLOYMENT", "gemini-2.0-flash"),
+            instruction=load_prompt("search_agent"),
+            description="Searches for relevant cybersecurity vulnerability advise for mitigations.",
+            output_key="search_report",
+            tools=[get_rag_vulnerability_knowledge_tool()],
+        )
+        return [AgentTool(agent=search_agent)]
+    return []
