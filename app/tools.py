@@ -92,7 +92,6 @@ def get_rag_vulnerability_knowledge_tool() -> VertexAiRagRetrieval:
             "Vertex AI RAG corpus ID containing security documentation."
         )
 
-
     return VertexAiRagRetrieval(
         name="retrieve_vulnerability_knowledge",
         description=(
@@ -105,9 +104,7 @@ def get_rag_vulnerability_knowledge_tool() -> VertexAiRagRetrieval:
             "The query should be a concise description of the security concern, "
             "vulnerability type, or code pattern being analyzed."
         ),
-        rag_resources=[
-            rag.RagResource(rag_corpus=vuln_rag_corpus)
-        ],
+        rag_resources=[rag.RagResource(rag_corpus=vuln_rag_corpus)],
         similarity_top_k=2,
         vector_distance_threshold=0.6,
     )
@@ -193,7 +190,6 @@ def get_safety_API_tool() -> MCPToolset:
             "SAFETY_API_KEY environment variable."
         )
 
-
     return MCPToolset(
         connection_params=SseServerParams(
             url="https://mcp.safetycli.com/sse",
@@ -226,9 +222,10 @@ def get_orchestrator_agent_tools() -> list:
         return [AgentTool(agent=search_agent)]
     return []
 
+
 # Export public functions for use by agents
 __all__ = [
+    "get_orchestrator_agent_tools",
     "get_rag_vulnerability_knowledge_tool",
     "get_safety_API_tool",
-    "get_orchestrator_agent_tools",
 ]

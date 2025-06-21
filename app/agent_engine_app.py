@@ -120,7 +120,9 @@ class AgentEngineApp(AdkApp):
             agent=template_attributes.get("agent"),
             enable_tracing=template_attributes.get("enable_tracing"),
             session_service_builder=template_attributes.get("session_service_builder"),
-            artifact_service_builder=template_attributes.get("artifact_service_builder"),
+            artifact_service_builder=template_attributes.get(
+                "artifact_service_builder"
+            ),
             env_vars=template_attributes.get("env_vars"),
         )
         new_app.set_up()
@@ -171,16 +173,10 @@ def deploy_agent_engine_app(
     staging_bucket = f"gs://{project}-agent-engine"
 
     create_bucket_if_not_exists(
-        bucket_name=staging_bucket,
-        project=project,
-        location=location
+        bucket_name=staging_bucket, project=project, location=location
     )
 
-    vertexai.init(
-        project=project,
-        location=location,
-        staging_bucket=staging_bucket
-    )
+    vertexai.init(project=project, location=location, staging_bucket=staging_bucket)
 
     # Read and parse requirements file
     try:
@@ -212,9 +208,7 @@ def deploy_agent_engine_app(
     logging.info(f"Agent configuration: {agent_config}")
 
     # Deploy or update the agent
-    existing_agents = list(
-        agent_engines.list(filter=f"display_name={agent_name}")
-    )
+    existing_agents = list(agent_engines.list(filter=f"display_name={agent_name}"))
 
     if existing_agents:
         logging.info(f"Updating existing agent: {agent_name}")
@@ -321,10 +315,7 @@ def _create_argument_parser() -> argparse.ArgumentParser:
 
     parser.add_argument(
         "--set-env-vars",
-        help=(
-            "Comma-separated list of environment variables "
-            "in KEY=VALUE format"
-        ),
+        help=("Comma-separated list of environment variables in KEY=VALUE format"),
     )
 
     return parser
