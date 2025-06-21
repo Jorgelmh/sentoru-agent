@@ -14,6 +14,9 @@ def get_rag_vulnerability_knowledge_tool() -> VertexAiRagRetrieval:
     """
     Returns the VertexAiRagRetrieval instance for vulnerability knowledge retrieval.
     """
+    logger.log("VULN_RAG_CORPUS")
+    logger.log(os.environ.get("VULN_RAG_CORPUS"))
+
     return VertexAiRagRetrieval(
         name="retrieve_vulnerability_knowledge",
         description=(
@@ -26,7 +29,7 @@ def get_rag_vulnerability_knowledge_tool() -> VertexAiRagRetrieval:
         rag_resources=[
             rag.RagResource(
                 rag_corpus=os.environ.get(
-                    "VULN_RAG_CORPUS"
+                    "VULN_RAG_CORPUS",
                 )  # Set this env var to your security corpus
             )
         ],

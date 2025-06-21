@@ -69,6 +69,14 @@ jobs:
 
   unittests:
     runs-on: ubuntu-latest
+    env:
+      VULN_RAG_CORPUS: ${{ secrets.VULN_RAG_CORPUS }}
+      GOOGLE_CLOUD_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+      GOOGLE_CLOUD_LOCATION: ${{ secrets.GCP_REGION }}
+      GOOGLE_GENAI_USE_VERTEXAI: True
+      LLM_DEPLOYMENT: gemini-2.5-flash
+      SAFETY_API_KEY: ${{ secrets.SAFETY_API_KEY }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -92,4 +100,4 @@ jobs:
         run: uv sync --dev
 
       - name: Run Unittests
-        run: uv run pytest ./tests/unit/
+        run: uv run pytest .
