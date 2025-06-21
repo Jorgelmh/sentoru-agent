@@ -90,9 +90,27 @@ Sentoru combines the strengths of multiple security tool categories into a singl
 
 ---
 
+## 🎥 See It In Action
+
+Check out our demo video to see Sentoru in action: **[Watch Demo on YouTube](https://www.youtube.com/watch?v=w-aS35DFAQo)**
+
+---
+
 ## ✅ Quick Start
 
-### Installation
+### GitHub App Installation (Recommended)
+
+For the easiest setup, install the **Sentoru GitHub App** directly in your repositories:
+
+**🚀 [Install Sentoru GitHub App](https://github.com/apps/sentoru-ai)**
+
+Once installed, Sentoru will automatically analyze your pull requests and provide security feedback, fixes, and penetration tests.
+
+### Local Development Setup
+
+For local development and testing, follow these steps:
+
+#### Prerequisites
 
 Before you begin, ensure you have the following prerequisites installed:
 - **uv**: Python package manager - [Install](https://docs.astral.sh/uv/getting-started/installation/)
@@ -118,9 +136,13 @@ Before you begin, ensure you have the following prerequisites installed:
     GOOGLE_CLOUD_PROJECT=<your-gcp-project-id>
     GOOGLE_GENAI_USE_VERTEXAI=True
     GOOGLE_CLOUD_LOCATION=us-central1
-    LLM_DEPLOYMENT=gemini-2.0-flash
+    LLM_DEPLOYMENT=gemini-2.5-flash
     SAFETY_API_KEY=<your-safety-mcp-apikey>
+    VULN_RAG_CORPUS=<your-rag-corpus-resource-name>
+    USE_RAG=true
     ```
+
+    **Note**: `VULN_RAG_CORPUS` should be set to your Vertex AI RAG Engine resource name in Google Cloud (e.g., `projects/your-project/locations/us-central1/ragCorpora/your-corpus-id`). The `USE_RAG` environment variable must also be set to enable RAG capabilities for local development and testing.
 
 ### Running the Agent
 
