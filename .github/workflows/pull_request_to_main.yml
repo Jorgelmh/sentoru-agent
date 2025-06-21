@@ -7,3 +7,4 @@ on:
 jobs:
   tests-and-linter:
     uses: ./.github/workflows/_tests_and_code_quality.yml
+    secrets: inherit
