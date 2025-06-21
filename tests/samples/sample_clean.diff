@@ -1,55 +1,7 @@
 from fastapi import FastAPI
-from contextlib import asynccontextmanager
-import aiosqlite
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Create and connect to the database
-    db = await aiosqlite.connect('users.db')
-    cursor = await db.cursor()
-    await cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            username TEXT PRIMARY KEY,
-            email TEXT
-        )
-    ''')
-    await cursor.execute("INSERT OR IGNORE INTO users (username, email) VALUES (?, ?)", ('alice', 'alice@example.com'))
-    await cursor.execute("INSERT OR IGNORE INTO users (username, email) VALUES (?, ?)", ('bob', 'bob@example.com'))
-    await db.commit()
-    await db.close()
-    yield
 
 app = FastAPI(lifespan=lifespan)
 
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
-
-@app.get("/users/{username}")
-async def get_user(username: str):
-    # Input validation: ensure username contains only alphanumeric characters and underscores
-    import re
-    if not re.match(r'^[a-zA-Z0-9_]+$', username):
-        return {"error": "Invalid username format"}
-    
-    # Additional length validation
-    if len(username) > 50:
-        return {"error": "Username too long"}
-    
-    try:
-        db = await aiosqlite.connect('users.db')
-        cursor = await db.cursor()
-
-        # Use parameterized query to prevent SQL injection
-        query = "SELECT * FROM users WHERE username = ?"
-
-        await cursor.execute(query, (username,))
-        user = await cursor.fetchone()
-        await db.close()
-
-        if user:
-            return {"username": user[0], "email": user[1]}
-        else:
-            return {"error": "User not found"}
-    except aiosqlite.Error as e:
-        return {"error": "Database error occurred"} 
