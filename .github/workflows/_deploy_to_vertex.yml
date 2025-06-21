@@ -44,4 +44,4 @@ jobs:
             --agent-name sentoru-agent \
             --project ${{ secrets.GCP_PROJECT_ID }} \
             --location ${{ secrets.GCP_REGION }} \
-            --set-env-vars="SAFETY_API_KEY=${{ secrets.SAFETY_API_KEY }},LLM_DEPLOYMENT=gemini-2.5-flash,VULN_RAG_CORPUS=${{ secrets.VULN_RAG_CORPUS }}" 
+            --set-env-vars="SAFETY_API_KEY=${{ secrets.SAFETY_API_KEY }},LLM_DEPLOYMENT=gemini-2.5-flash,GOOGLE_GENAI_USE_VERTEXAI=True,VULN_RAG_CORPUS=${{ secrets.VULN_RAG_CORPUS }}" 
