@@ -45,5 +45,3 @@ resource "google_project_iam_member" "vertex_ai_sa_permissions" {
   member  = google_project_service_identity.vertex_sa.member
   depends_on = [resource.google_project_service.services]
 }
-
-

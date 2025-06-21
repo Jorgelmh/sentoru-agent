@@ -1,8 +1,12 @@
 name: Pull requests to Main
 
 on:
-  pull_request: 
+  pull_request:
     branches: [main]
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   tests-and-linter:

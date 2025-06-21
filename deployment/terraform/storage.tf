@@ -36,6 +36,3 @@ resource "google_storage_bucket" "logs_data_bucket" {
 
   depends_on = [resource.google_project_service.cicd_services, resource.google_project_service.shared_services]
 }
-
-
-
