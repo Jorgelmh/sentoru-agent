@@ -23,8 +23,7 @@ def add_git_diff_to_state(callback_context: CallbackContext) -> None:
 
 
 def format_patch_for_display(patch: PatchSet) -> str:
-    """
-    Formats a PatchSet object into a markdown string, showing only added lines.
+    """Formats a PatchSet object into a markdown string, showing only added lines.
 
     Args:
         patch: A PatchSet object from the unidiff library.
@@ -67,9 +66,9 @@ def format_patch_for_display(patch: PatchSet) -> str:
 
 
 def format_git_diff_cb(callback_context: CallbackContext) -> None:
-    """
-    Formats the git diff by adding the line numbers to the diff, so the LLM
-    Agent can correctly identify the lines that have been changed and where to place the suggestions.
+    """Formats the git diff by adding the line numbers to the diff, so the LLM Agent can
+    correctly identify the lines that have been changed and where to place the
+    suggestions.
 
     Note: This is crucial as the LLM is not able to properly determine the updated lines by itself directly from the git diff.
     It'd need to calculate the position of the lines in the file by counting the hunk lines, which is usually not efficient and error prone.

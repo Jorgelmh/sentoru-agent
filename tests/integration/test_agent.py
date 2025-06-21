@@ -22,8 +22,8 @@ from app.agent import root_agent
 
 
 async def test_agent_stream() -> None:
-    """
-    Integration test for the agent stream functionality.
+    """Integration test for the agent stream functionality.
+
     Tests that the agent returns valid streaming responses.
     """
 

@@ -92,5 +92,3 @@ Before you begin, ensure you have the following prerequisites installed:
 To run the agent locally for development and testing, the best way to try it out is by using the `notebooks/adk_app_testing.ipynb` notebook. Where you can either run the Agent flow locally or connect to the cloud resource running in Google Cloud's Vertex AI. In the notebook, you can experiment by providing different git diff files and inspect the JSON responses from the agent to see the security analysis, code fixes, and generated penetration tests.
 
 > **Note**: A generic web interface is available by running `uv run adk web`, but it is not suitable for this agent. This agent requires specific session state, including a git diff, to be passed in, which is best handled through the testing notebook.
-
-

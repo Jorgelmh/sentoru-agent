@@ -54,5 +54,3 @@ variable "agentengine_sa_roles" {
     "roles/storage.admin"
   ]
 }
-
-

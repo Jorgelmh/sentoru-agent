@@ -21,7 +21,7 @@ Follow these steps to execute load tests:
    # Create and activate virtual environment
    python3 -m venv locust_env
    source locust_env/bin/activate
-   
+
    # Install required packages
    pip install locust==2.31.1 "google-cloud-aiplatform[langchain,reasoningengine]>=1.77.0"
    ```
@@ -39,4 +39,3 @@ Follow these steps to execute load tests:
    ```
 
    This command initiates a 30-second load test, simulating 2 users spawning per second, reaching a maximum of 10 concurrent users.
-

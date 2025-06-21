@@ -11,13 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Unit tests for security analysis tools module.
 
-This module contains comprehensive unit tests for the tools.py module,
-covering RAG vulnerability knowledge retrieval and Safety API integration.
-Tests include environment variable validation, tool configuration, and
-error handling scenarios.
+This module contains comprehensive unit tests for the tools.py module, covering RAG
+vulnerability knowledge retrieval and Safety API integration. Tests include environment
+variable validation, tool configuration, and error handling scenarios.
 """
 
 import os
@@ -109,7 +107,7 @@ class TestGetRagVulnerabilityKnowledgeTool:
         # Arrange
         test_corpus_id = "projects/test/locations/us/ragCorpora/corpus-123"
         monkeypatch.setenv("VULN_RAG_CORPUS", test_corpus_id)
-        
+
         mock_rag_resource = Mock()
         mock_rag.RagResource.return_value = mock_rag_resource
 
@@ -195,7 +193,7 @@ class TestGetSafetyApiTool:
 
         with patch("app.tools.MCPToolset") as mock_mcp_toolset, \
              patch("app.tools.SseServerParams") as mock_sse_params:
-            
+
             mock_params = Mock()
             mock_sse_params.return_value = mock_params
 
@@ -228,7 +226,7 @@ class TestGetSafetyApiTool:
             call_args = mock_mcp_toolset.call_args
             connection_params = call_args[1]["connection_params"]
             auth_header = connection_params.headers["Authorization"]
-            
+
             assert auth_header == f"Bearer {test_api_key}"
             assert auth_header.startswith("Bearer ")
 
@@ -246,7 +244,7 @@ class TestToolsIntegration:
 
         with patch("app.tools.VertexAiRagRetrieval") as mock_rag, \
              patch("app.tools.MCPToolset") as mock_safety:
-            
+
             mock_rag_tool = Mock()
             mock_safety_tool = Mock()
             mock_rag.return_value = mock_rag_tool
@@ -268,7 +266,7 @@ class TestToolsIntegration:
         assert hasattr(tools, "get_rag_vulnerability_knowledge_tool")
         assert hasattr(tools, "get_safety_API_tool")
         assert hasattr(tools, "__all__")
-        
+
         expected_exports = [
             "get_rag_vulnerability_knowledge_tool",
             "get_safety_API_tool",
@@ -320,7 +318,7 @@ class TestToolsErrorHandling:
         """Test that logging client is properly initialized."""
         # Import should trigger logging client creation
         from app import tools
-        
+
         # The module should have initialized the logging client
         assert hasattr(tools, "logging_client")
         assert hasattr(tools, "logger")

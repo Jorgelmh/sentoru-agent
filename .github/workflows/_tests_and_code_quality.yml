@@ -18,7 +18,7 @@ jobs:
 
       - name: Install Python
         uses: actions/setup-python@v5
-      
+
       - name: Install Project
         run: uv sync --dev
 
@@ -36,7 +36,7 @@ jobs:
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
-      
+
       - name: Install Python
         uses: actions/setup-python@v5
 
@@ -57,7 +57,7 @@ jobs:
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
-      
+
       - name: Install Python
         uses: actions/setup-python@v5
 
