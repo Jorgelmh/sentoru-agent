@@ -10,13 +10,14 @@ We were inspired to build a universal safety net for this new era of development
 
 ## What it does
 
-Sentoru is an AI-powered security agent designed to ensure every line of code is secure, no matter how fast—or auto‑generated—it is. In technical terms, Sentoru is a **Multi-Agent System** architected to be **git-provider agnostic**, integrating directly into the pull request workflow of modern development platforms like GitHub, GitLab, or Azure Repos.
+Sentoru is an AI-powered security agent designed to ensure every line of code is secure, no matter how fast—or auto‑generated—it is. In technical terms, Sentoru is a **Hierarchical Multi-Agent System** architected to be **git-provider agnostic**, integrating directly into the pull request workflow of modern development platforms like GitHub, GitLab, or Azure Repos.
 
-Once triggered by a new pull request, it automatically:
+Once triggered by a new pull request, Sentoru's orchestrated workflow automatically:
 
-1.  **Analyzes** code changes for vulnerabilities using a custom RAG knowledge base.
-2.  **Generates fixes** and proposes them in a developer-friendly, native format.
-3.  **Generates penetration tests** (`pytest` code) to validate that the suggested fixes are effective against the original attack vector.
+1.  **Gathers contextual intelligence** through a Search Agent that retrieves relevant security knowledge from a custom RAG knowledge base.
+2.  **Analyzes** code changes for vulnerabilities using both the retrieved security context and direct vulnerability scanning.
+3.  **Generates fixes** and proposes them in a developer-friendly, native format.
+4.  **Generates penetration tests** (`pytest` code) to validate that the suggested fixes are effective against the original attack vector.
 
 ## How we built it
 
@@ -24,8 +25,9 @@ Sentoru's journey began as an idea at a previous hackathon where we first explor
 
 A significant part of our development involved mastering the Google Cloud platform, which was a new and incredibly rewarding experience. To bring our vision to life, we built Sentoru on a modern, serverless **Google Cloud stack**, leveraging these key technologies:
 
-*   **Sequential Agents:** We orchestrated three specialized agents (Analyst, Fixer, Pentester) using a sequential model to ensure a logical, end-to-end security workflow.
+*   **Hierarchical Multi-Agent Architecture:** We designed a sophisticated orchestration system where an **Orchestrator Agent** intelligently coordinates the entire security workflow. This master agent conditionally invokes a **Search Agent** for RAG-based knowledge retrieval, then delegates to a **Review Agent** that manages the sequential pipeline of specialized security agents (Analyst, Fixer, Pentester).
 *   **Vertex AI RAG Engine:** We configured a powerful RAG engine on Vertex AI. Our knowledge base, a corpus of security documents, is stored in **Google Cloud Storage** and ingested by Vertex AI Search. The system then uses **Gemini 2.5 Flash** to intelligently parse the documents and `text-embedding-005` to create vectors for high-quality semantic search.
+*   **Agent-as-a-Tool Pattern:** We implemented a pattern where the Search Agent operates as a specialized tool within the orchestrator, allowing for modular, configurable intelligence gathering.
 *   **Cloud Run & Probot:** A serverless function runs our bot (built with Probot), which listens for PR webhooks from git providers to trigger the agent's security review.
 *   **GitHub Actions for CI/CD:** We established a full DevOps pipeline on GitHub to automate the deployment of our agent to Google Cloud. This effort paid off immensely, making our process repeatable, reliable, and ready for future iterations.
 
@@ -40,7 +42,7 @@ One of our standout achievements is creating a system that directly tackles a cr
 
 Our key accomplishments include:
 
-*   **Developing a True Multi-Agent System:** We successfully designed and deployed a system where specialized agents—Analyst, Fixer, and Pentester—collaborate to provide a comprehensive security review. This agentic architecture is not just a concept; it's a functioning solution to a real-world problem.
+*   **Developing a True Hierarchical Multi-Agent System:** We successfully designed and deployed a sophisticated orchestration system where an intelligent coordinator manages specialized agents across multiple tiers. From the **Orchestrator Agent** that makes dynamic decisions about tool invocation, to the **Search Agent** that provides contextual intelligence, to the sequential **Review Agent** pipeline (Analyst, Fixer, Pentester)—this multi-layered agentic architecture is not just a concept; it's a functioning solution to a real-world problem that demonstrates advanced AI coordination patterns.
 
 *   **Building a Seamless GitHub Bot Integration:** We are particularly proud of the orchestration between our agents and the pull request workflow. We developed a custom GitHub bot that brings the agent's insights directly to the developer, highlighting vulnerabilities and suggesting fixes. This bot is the crucial component that **closes the feedback loop** instantly and effectively.
 
@@ -70,6 +72,8 @@ Sentoru combines the strengths of multiple security tool categories into a singl
 
 5.  **Security is Inherent Value, and Automation is How You Deliver It:** This project crystallized a core belief for us: security is not an optional feature, but an inherent component of quality software. While every good developer knows this, the process is often manual and time-consuming. We learned that the most profound value Sentoru offers is its ability to automatically embed this crucial layer of security into every pull request, making the *right way* the *easy way*.
 
+
+
 ## What's next for Sentoru
 
 Looking ahead, our vision is to evolve Sentoru from a powerful agent into an indispensable, autonomous security partner for any development team. Our roadmap is focused on strengthening its capabilities and thoughtfully expanding its reach:
@@ -79,3 +83,5 @@ Looking ahead, our vision is to evolve Sentoru from a powerful agent into an ind
 *   **Becoming a Universal Tool for Developers Everywhere:** While we currently focus on Python, we see immense potential for Sentoru to become a versatile tool for all developers. We will expand support to other major languages like JavaScript, Java, and Go, ensuring that any team can benefit from automated security, regardless of their tech stack.
 
 *   **Enabling Trusted Enterprise Adoption:** We recognize that large corporations are rightly hesitant to share their intellectual property with external services. To meet them where they are, we envision Sentoru as a solution that can be deployed entirely within a company's own cloud environment. This makes Sentoru a trusted and easily adoptable piece of technology, allowing enterprises to leverage our agent with their own models and infrastructure, and embrace AI with both security and confidence.
+
+*   **Re-enabling Full RAG Capabilities in Cloud Deployments:** While our RAG-powered Search Agent works flawlessly in local development, we encountered a deployment limitation where `VertexAiRagRetrieval` tools return empty results when deployed to Vertex AI Reasoning Engine—a [known issue](https://github.com/google/adk-python/issues/496) in the current ADK version. We're actively monitoring ADK developments and will re-enable our full RAG capabilities in cloud deployments as soon as this issue is resolved, allowing our deployed agents to leverage the complete knowledge base for enhanced security analysis.
