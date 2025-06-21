@@ -33,7 +33,7 @@ def get_rag_vulnerability_knowledge_tool() -> VertexAiRagRetrieval:
                 )  # Set this env var to your security corpus
             )
         ],
-        similarity_top_k=5,
+        similarity_top_k=3,
         vector_distance_threshold=0.6,
     )
 
