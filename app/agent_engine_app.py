@@ -343,7 +343,7 @@ def main() -> None:
     if not args.project:
         try:
             _, args.project = google.auth.default()
-        except google.auth.exceptions.GoogleAuthError as e:
+        except google.auth.exceptions.GoogleAuthError as e: # pyright: ignore
             logging.error(f"Failed to get default project: {e}")
             return
 
