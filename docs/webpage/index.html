@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentoru – Secure Coding for the AI Era</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <!-- Favicon using the provided logo -->
+    <link rel="icon" href="sentoru-logo.jpg">
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0e1a; /* A deep, dark blue */
+            color: #e0e0e0;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #4f46e5, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .feature-icon {
+            background: linear-gradient(145deg, #4f46e5, #a855f7);
+        }
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        th, td {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        th {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        td:first-child, th:first-child {
+            border-left: none;
+        }
+        td:last-child, th:last-child {
+            border-right: none;
+        }
+        thead th:first-child {
+            border-top-left-radius: 0.5rem;
+        }
+        thead th:last-child {
+            border-top-right-radius: 0.5rem;
+        }
+        tbody tr:last-child td:first-child {
+            border-bottom-left-radius: 0.5rem;
+        }
+        tbody tr:last-child td:last-child {
+            border-bottom-right-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 py-3 glass-card">
+        <nav class="container mx-auto px-6 flex justify-between items-center">
+            <a href="#" class="flex items-center gap-3">
+                <img src="sentoru-logo.jpg" alt="Sentoru Logo" class="h-10 w-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/0a0e1a/ffffff?text=S';">
+                <span class="text-2xl font-bold text-white">Sentoru</span>
+            </a>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#features" class="hover:text-indigo-400 transition-colors">Features</a>
+                <a href="#architecture" class="hover:text-indigo-400 transition-colors">Architecture</a>
+                <a href="#about" class="hover:text-indigo-400 transition-colors">About</a>
+                <a href="#get-started" class="hover:text-indigo-400 transition-colors">Get Started</a>
+            </div>
+            <div class="flex items-center gap-4">
+                 <a href="https://github.com/Jorgelmh/sentoru-agent" target="_blank" rel="noopener noreferrer" title="View on GitHub" class="text-gray-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.168 6.839 9.492.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.378.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.942.359.308.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+                <a href="#get-started" class="hidden md:block bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
+                    Quick Start
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12 md:py-20">
+
+        <!-- Hero Section -->
+        <section class="text-center py-16 md:py-24">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight">
+                Secure Coding for the <span class="gradient-text">AI Era</span>
+            </h1>
+            <p class="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-gray-300">
+                Sentoru is the AI agent that embeds an entire security team—an analyst, a fixer, and a pen-tester—directly into your pull request workflow.
+            </p>
+            <div class="mt-10 flex justify-center gap-4 flex-wrap">
+                <a href="#get-started" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-8 rounded-lg transition-transform hover:scale-105 transform">Get Started</a>
+                <a href="https://github.com/Jorgelmh/sentoru-agent" target="_blank" rel="noopener noreferrer" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-lg transition-transform hover:scale-105 transform inline-flex items-center gap-2">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.168 6.839 9.492.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.378.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.942.359.308.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" /></svg>
+                    View on GitHub
+                </a>
+            </div>
+        </section>
+
+        <!-- Inspiration Section -->
+        <section id="about" class="py-16 md:py-24">
+             <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Our Inspiration</h2>
+                <p class="mt-4 text-gray-400 text-lg">A Universal Safety Net for Modern Development</p>
+            </div>
+            <div class="mt-12 max-w-4xl mx-auto glass-card rounded-xl p-8 shadow-2xl">
+                <p class="text-lg text-gray-300 leading-relaxed">
+                    The rise of "vibe coding" and AI-assisted development highlighted a major security gap, but it also revealed a universal truth about modern software engineering: speed often comes at the expense of security. The pressure to ship quickly means that vulnerabilities can slip through, regardless of whether the code is written by a human, generated by an AI, or a mix of both.
+                </p>
+                <p class="mt-4 text-lg text-gray-300 leading-relaxed">
+                    We were inspired to build a universal safety net for this new era of development. We envisioned an intelligent agent that could act as a tireless security partner, scrutinizing every pull request with the same rigor. Sentoru was born from this vision—to secure <strong class="font-semibold text-white">all code, for every developer, in every PR.</strong>
+                </p>
+            </div>
+        </section>
+
+        <!-- Features / What it does Section -->
+        <section id="features" class="py-16 md:py-24">
+            <div class="text-center max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-white">A Multi-Agent System for Security</h2>
+                <p class="mt-4 text-lg text-gray-300">
+                    Sentoru operates as a sequence of specialized AI agents, each with a distinct role in the security workflow, triggered on every pull request.
+                </p>
+            </div>
+            <div class="mt-16 grid md:grid-cols-3 gap-8">
+                <!-- Analyst Agent -->
+                <div class="glass-card rounded-xl p-8 text-center transition-all duration-300 hover:transform hover:-translate-y-2 hover:shadow-2xl">
+                    <div class="feature-icon inline-flex items-center justify-center h-16 w-16 rounded-full text-white mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white">Analyze</h3>
+                    <p class="mt-2 text-gray-300">Analyzes code changes for vulnerabilities using a custom RAG knowledge base of security best practices.</p>
+                </div>
+                <!-- Fixer Agent -->
+                <div class="glass-card rounded-xl p-8 text-center transition-all duration-300 hover:transform hover:-translate-y-2 hover:shadow-2xl">
+                    <div class="feature-icon inline-flex items-center justify-center h-16 w-16 rounded-full text-white mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 16v-2m0-8v-2m-6 4H4m16 0h-2m-8 6H8m8-16h2a2 2 0 012 2v2m-4 12v2a2 2 0 01-2 2h-2m-4-16H8a2 2 0 00-2 2v2m4 12v2a2 2 0 002 2h2" /></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white">Generate Fixes</h3>
+                    <p class="mt-2 text-gray-300">Generates and proposes fixes in a developer-friendly, native patch format for one-click approval.</p>
+                </div>
+                <!-- Pentester Agent -->
+                <div class="glass-card rounded-xl p-8 text-center transition-all duration-300 hover:transform hover:-translate-y-2 hover:shadow-2xl">
+                    <div class="feature-icon inline-flex items-center justify-center h-16 w-16 rounded-full text-white mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white">Validate & Test</h3>
+                    <p class="mt-2 text-gray-300">Generates `pytest` penetration tests to validate that the suggested fixes are effective against the original attack vector.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture Section -->
+        <section id="architecture" class="py-16 md:py-24">
+            <div class="text-center max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-white">How We Built It</h2>
+                <p class="mt-4 text-lg text-gray-300">
+                    Built on a modern, serverless Google Cloud stack, orchestrating specialized agents with Vertex AI.
+                </p>
+            </div>
+            <div class="mt-12 glass-card rounded-xl p-6 md:p-8 shadow-2xl">
+                <img src="architecture-diagram-v2.jpg" alt="Sentoru Architecture Diagram" class="rounded-lg shadow-lg w-full h-auto" onerror="this.onerror=null;this.src='https://placehold.co/1200x600/1e293b/ffffff?text=Architecture+Diagram';">
+            </div>
+             <div class="mt-8 max-w-5xl mx-auto grid md:grid-cols-2 gap-8 text-gray-300 leading-relaxed">
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-2">Sequential Agents</h3>
+                    <p>We orchestrated three specialized agents (Analyst, Fixer, Pentester) using a sequential model to ensure a logical, end-to-end security workflow.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-2">Vertex AI RAG Engine</h3>
+                    <p>A powerful RAG engine using Vertex AI Search, Gemini 2.5 Flash, and `text-embedding-005` to create vectors for high-quality semantic search.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-2">Cloud Run & Probot</h3>
+                    <p>A serverless function runs our bot (built with Probot), which listens for PR webhooks from git providers to trigger the agent's security review.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-2">GitHub Actions for CI/CD</h3>
+                    <p>A full DevOps pipeline on GitHub automates the deployment of our agent to Google Cloud, making our process repeatable and reliable.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparison Table Section -->
+        <section class="py-16 md:py-24">
+             <div class="text-center max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-white">How Sentoru Stands Out</h2>
+                 <p class="mt-4 text-lg text-gray-300">Combining the best of security tools into a single, developer-centric agent.</p>
+            </div>
+            <div class="mt-12 overflow-x-auto">
+                <table class="w-full min-w-max text-left text-sm md:text-base glass-card rounded-xl">
+                    <thead class="bg-white/5">
+                        <tr>
+                            <th class="p-4 font-semibold text-white">Tool/Agent</th>
+                            <th class="p-4 font-semibold text-white text-center">Multi-Agent</th>
+                            <th class="p-4 font-semibold text-white text-center">Static Analysis</th>
+                            <th class="p-4 font-semibold text-white text-center">Suggests Fixes</th>
+                            <th class="p-4 font-semibold text-white text-center">Generates Pentests</th>
+                            <th class="p-4 font-semibold text-white text-center">PR Integration</th>
+                            <th class="p-4 font-semibold text-white text-center">Open Source</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-300">
+                        <tr class="bg-indigo-600/20">
+                            <td class="p-4 font-bold text-white">Sentoru</td>
+                            <td class="p-4 text-center font-bold text-green-400">✅</td>
+                            <td class="p-4 text-center font-bold text-green-400">✅</td>
+                            <td class="p-4 text-center font-bold text-green-400">✅</td>
+                            <td class="p-4 text-center font-bold text-green-400">✅</td>
+                            <td class="p-4 text-center font-bold text-green-400">✅</td>
+                            <td class="p-4 text-center font-bold text-green-400">✅</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4">Snyk Code + AI Fix</td>
+                            <td class="p-4 text-center text-red-400">❌</td>
+                            <td class="p-4 text-center text-green-400">✅</td>
+                            <td class="p-4 text-center text-green-400">✅</td>
+                            <td class="p-4 text-center text-red-400">❌</td>
+                            <td class="p-4 text-center text-green-400">✅</td>
+                            <td class="p-4 text-center text-red-400">❌</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4">GitHub CodeQL</td>
+                            <td class="p-4 text-center text-red-400">❌</td>
+                            <td class="p-4 text-center text-green-400">✅</td>
+                            <td class="p-4 text-center text-red-400">❌</td>
+                            <td class="p-4 text-center text-red-400">❌</td>
+                            <td class="p-4 text-center text-green-400">✅</td>
+                            <td class="p-4 text-center text-green-400">✅</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4">Argusee (Google Research)</td>
+                            <td class="p-4 text-center text-green-400">✅</td>
+                            <td class="p-4 text-center text-green-400">✅</td>
+                            <td class="p-4 text-center text-red-400">❌</td>
+                            <td class="p-4 text-center text-green-400">✅</td>
+                            <td class="p-4 text-center text-red-400">❌</td>
+                            <td class="p-4 text-center text-green-400">✅</td>
+                        </tr>
+                         <tr>
+                            <td class="p-4">Generic LLMs (ChatGPT, etc.)</td>
+                            <td class="p-4 text-center text-red-400">❌</td>
+                            <td class="p-4 text-center text-yellow-400">⚠️</td>
+                            <td class="p-4 text-center text-green-400">✅</td>
+                            <td class="p-4 text-center text-red-400">❌</td>
+                            <td class="p-4 text-center text-red-400">❌</td>
+                            <td class="p-4 text-center text-green-400">✅</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- What's Next Section -->
+        <section class="py-16 md:py-24">
+            <div class="text-center max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-white">What's Next for Sentoru</h2>
+                 <p class="mt-4 text-lg text-gray-300">Evolving into an indispensable, autonomous security partner.</p>
+            </div>
+            <div class="mt-12 grid md:grid-cols-3 gap-8">
+                <div class="glass-card rounded-xl p-8">
+                    <h3 class="text-xl font-bold text-white mb-3">True Autonomy</h3>
+                    <p class="text-gray-300">Implement a "closed-loop" agent with a secure execution environment for pentests, enabling a recursive, self-healing cycle until code is verifiably secure.</p>
+                </div>
+                 <div class="glass-card rounded-xl p-8">
+                    <h3 class="text-xl font-bold text-white mb-3">Universal Tool</h3>
+                    <p class="text-gray-300">Expand support to other major languages like JavaScript, Java, and Go, making Sentoru a versatile tool for all developers.</p>
+                </div>
+                 <div class="glass-card rounded-xl p-8">
+                    <h3 class="text-xl font-bold text-white mb-3">Trusted Enterprise Adoption</h3>
+                    <p class="text-gray-300">Enable deployment within a company's own cloud environment, allowing enterprises to use Sentoru with their own models and infrastructure.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Quick Start Section -->
+        <section id="get-started" class="py-16 md:py-24">
+            <div class="text-center max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Get Started with Sentoru</h2>
+                 <p class="mt-4 text-lg text-gray-300">Follow these steps to set up and run the agent locally for development and testing.</p>
+            </div>
+            
+            <div class="mt-12 max-w-4xl mx-auto space-y-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-2">1. Prerequisites</h3>
+                    <p class="text-gray-300">Ensure you have <a href="https://docs.astral.sh/uv/getting-started/installation/" target="_blank" class="text-indigo-400 hover:underline">uv</a> and the <a href="https://cloud.google.com/sdk/docs/install" target="_blank" class="text-indigo-400 hover:underline">Google Cloud SDK</a> installed.</p>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-2">2. Sync Python Dependencies</h3>
+                    <p class="text-gray-300 mb-2">Install the required Python packages.</p>
+                    <pre class="bg-gray-900 rounded-lg p-4 text-gray-300 font-mono text-sm relative"><code id="code-sync">uv sync</code><button onclick="copyToClipboard('code-sync')" class="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-white text-xs py-1 px-2 rounded">Copy</button></pre>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-2">3. Set Up Environment Variables</h3>
+                    <p class="text-gray-300 mb-2">Create a <code class="bg-gray-700 text-sm rounded px-1 py-0.5">.env</code> file in the project root with your credentials.</p>
+                    <pre class="bg-gray-900 rounded-lg p-4 text-gray-300 font-mono text-sm relative"><code id="code-env">GOOGLE_CLOUD_PROJECT=&lt;your-gcp-project-id&gt;
+GOOGLE_GENAI_USE_VERTEXAI=True
+GOOGLE_CLOUD_LOCATION=us-central1
+LLM_DEPLOYMENT=gemini-2.0-flash
+SAFETY_API_KEY=&lt;your-safety-mcp-apikey&gt;</code><button onclick="copyToClipboard('code-env')" class="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-white text-xs py-1 px-2 rounded">Copy</button></pre>
+                </div>
+
+                 <div>
+                    <h3 class="text-xl font-semibold text-white mb-2">4. Run the Agent</h3>
+                    <p class="text-gray-300">The best way to try out the agent is by using the <code class="bg-gray-700 text-sm rounded px-1 py-0.5">notebooks/adk_app_testing.ipynb</code> notebook. This allows you to run the agent flow locally or connect to a cloud resource, providing git diffs and inspecting the JSON responses.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 mt-16">
+        <div class="container mx-auto px-6 py-8 text-center text-gray-400">
+            <p>&copy; 2024 Sentoru Project. Secure smarter. Build faster.</p>
+             <p class="mt-2">
+                <a href="https://github.com/Jorgelmh/sentoru-agent" target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:underline">View Project on GitHub</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple copy-to-clipboard function
+        function copyToClipboard(elementId) {
+            const codeElement = document.getElementById(elementId);
+            const textToCopy = codeElement.innerText;
+            
+            // A temporary textarea is used to perform the copy command
+            const textArea = document.createElement('textarea');
+            textArea.value = textToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                // execCommand is used for broader browser compatibility in iFrames
+                document.execCommand('copy');
+                // You could add a small "Copied!" notification here
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+    </script>
+
+</body>
+</html>
