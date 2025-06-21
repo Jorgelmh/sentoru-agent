@@ -27,27 +27,40 @@
 
 ## How It Works: A Multi-Agent System
 
-Sentoru operates as a sequence of specialized AI agents, each with a distinct role in the security workflow. This multi-agent system ensures a thorough and structured approach to securing your code.
+Sentoru operates as a hierarchical multi-agent system with specialized AI agents, each with a distinct role in the security workflow. This architecture ensures a thorough and structured approach to securing your code through intelligent orchestration and sequential processing.
 
-1.  **Analyst Agent**:
-    *   **Responsibility**: This is the first agent in the chain. It analyzes the code changes in a pull request to identify potential security vulnerabilities.
+1.  **Orchestrator Agent**:
+    *   **Responsibility**: The master coordinator that manages the entire security workflow and decides which tools and sub-agents to invoke based on the configuration.
+    *   **Tools** (when `USE_RAG` is enabled):
+        *   **Search Agent**: A specialized sub-agent that performs RAG retrieval from the vulnerability knowledge base to gather relevant security context before the main analysis begins.
+    *   **Output**: Coordinates the overall workflow and passes enriched context to the review pipeline.
+
+2.  **Search Agent** (Optional - when RAG is enabled):
+    *   **Responsibility**: Performs intelligent retrieval from the cybersecurity knowledge base to provide contextual security information relevant to the code changes.
+    *   **Tools**:
+        *   `get_rag_vulnerability_knowledge_tool`: Consults a knowledge base of cybersecurity guidelines and best practices using Retrieval-Augmented Generation (RAG) on Vertex AI.
+    *   **Output**: A search report containing relevant vulnerability information and mitigation strategies.
+
+3.  **Review Agent** (Sequential Pipeline):
+    The orchestrator then invokes a sequential review pipeline consisting of three specialized agents:
+
+    **3.1 Analyst Agent**:
+    *   **Responsibility**: Analyzes the code changes in a pull request to identify potential security vulnerabilities, leveraging both the RAG-retrieved context (if available) and direct vulnerability scanning.
     *   **Tools**:
         *   `get_safety_API_tool`: Checks for known vulnerabilities in `requirements.txt` or `pyproject.toml` using the [Safety CLI](https://www.getsafety.com/cli) vulnerability database.
-        *   `get_rag_vulnerability_knowledge_tool`: Consults a knowledge base of cybersecurity guidelines and best practices using Retrieval-Augmented Generation (RAG) on Vertex AI to provide context on relevant vulnerabilities for the new code changes.
-    *   **Output**: A detailed analysis report of its findings.
+    *   **Output**: A detailed analysis report of security findings.
 
-2.  **Fixer Agent**:
-    *   **Responsibility**: This agent takes the `Analyst Agent`'s report and generates code patches to fix the identified vulnerabilities.
-    *   **Method**: It follows a detailed prompt that instructs it to create suggestions in the GitHub-approved patch format, including comments that explain the vulnerability and the fix.
+    **3.2 Fixer Agent**:
+    *   **Responsibility**: Takes the Analyst Agent's report and generates code patches to fix the identified vulnerabilities.
+    *   **Method**: Follows a detailed prompt that instructs it to create suggestions in the GitHub-approved patch format, including comments that explain the vulnerability and the fix.
     *   **Output**: A JSON object containing an array of code patches and a summary comment.
 
-3.  **Pentester Agent**:
-    *   **Responsibility**: The final agent in the sequence. It validates that the patches from the `Fixer Agent` are secure and don't introduce new flaws.
-    *   **Method**: It adopts an adversarial mindset to write `pytest` unit tests that act as penetration tests, simulating the original attack vector to ensure the fix is robust.
+    **3.3 Pentester Agent**:
+    *   **Responsibility**: The final agent in the sequence that validates the patches from the Fixer Agent are secure and don't introduce new flaws.
+    *   **Method**: Adopts an adversarial mindset to write `pytest` unit tests that act as penetration tests, simulating the original attack vector to ensure the fix is robust.
     *   **Output**: A new test file containing the penetration tests, along with an explanation of the tests.
 
-
-This sequential process ensures that every pull request is analyzed, fixed, and validated before it gets merged.
+This hierarchical orchestration ensures that every pull request benefits from contextual security knowledge (when RAG is enabled) and then undergoes thorough analysis, fixing, and validation through the sequential review pipeline.
 
 ### Current State and Future Vision
 
@@ -114,3 +127,33 @@ Before you begin, ensure you have the following prerequisites installed:
 To run the agent locally for development and testing, the best way to try it out is by using the `notebooks/adk_app_testing.ipynb` notebook. Where you can either run the Agent flow locally or connect to the cloud resource running in Google Cloud's Vertex AI. In the notebook, you can experiment by providing different git diff files and inspect the JSON responses from the agent to see the security analysis, code fixes, and generated penetration tests.
 
 > **Note**: A generic web interface is available by running `uv run adk web`, but it is not suitable for this agent. This agent requires specific session state, including a git diff, to be passed in, which is best handled through the testing notebook.
+
+### 🚨 Important: RAG Deployment Limitation
+
+**When deploying Sentoru to Vertex AI Reasoning Engine, you MUST disable RAG capabilities** by ensuring the `USE_RAG` environment variable is **not set**. This is due to a known issue with the ADK Python library.
+
+#### The Issue
+
+When deploying agents that use `VertexAiRagRetrieval` to Vertex AI Reasoning Engine, the deployed agent consistently returns zero events (`[]`) from `stream_query()`, causing the RAG functionality to fail silently. This issue is documented in the [ADK Python GitHub repository](https://github.com/google/adk-python/issues/496).
+
+**Error behavior:**
+- ✅ **Local execution**: RAG capabilities work perfectly fine
+- ✅ **Local execution**: Non-RAG tools work perfectly fine  
+- ✅ **Vertex AI deployment**: Non-RAG tools work perfectly fine
+- ❌ **Vertex AI deployment**: RAG tools return empty results
+
+#### Workaround
+
+To deploy Sentoru to production on Vertex AI:
+
+1. **Disable RAG** by not setting the `USE_RAG` environment variable:
+   ```bash
+   # Do NOT set USE_RAG when deploying to Vertex AI
+   # unset USE_RAG
+   ```
+
+2. **Verify RAG is disabled** in your deployment configuration - the agent will automatically fall back to using only the Safety API tool for vulnerability scanning.
+
+3. **Test locally first** with `USE_RAG=true` to validate the full RAG functionality works in your development environment.
+
+This limitation only affects the RAG-based vulnerability knowledge retrieval. All other security analysis features (Safety API vulnerability scanning, code fixing, and penetration test generation) work perfectly in both local and deployed environments.
