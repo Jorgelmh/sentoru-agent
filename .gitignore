@@ -195,3 +195,8 @@ my_env.tfvars
 .saved_chats
 .env
 .requirements.txt
+
+#Exclude local files
+docs/resources/architecture-diagram-v2.png
+docs/resources/architecture-diagram-oldv1.png
+docs/resources/architecture-diagram-oldv2.png

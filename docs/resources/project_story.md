@@ -25,7 +25,7 @@ Sentoru's journey began as an idea at a previous hackathon where we first explor
 A significant part of our development involved mastering the Google Cloud platform, which was a new and incredibly rewarding experience. To bring our vision to life, we built Sentoru on a modern, serverless **Google Cloud stack**, leveraging these key technologies:
 
 *   **Sequential Agents:** We orchestrated three specialized agents (Analyst, Fixer, Pentester) using a sequential model to ensure a logical, end-to-end security workflow.
-*   **Vertex AI RAG Engine:** We configured a powerful RAG engine using Vertex AI Search. This system uses **Gemini 2.5 Flash** to intelligently parse our security knowledge base and `text-embedding-005` to create vectors for high-quality semantic search.
+*   **Vertex AI RAG Engine:** We configured a powerful RAG engine on Vertex AI. Our knowledge base, a corpus of security documents, is stored in **Google Cloud Storage** and ingested by Vertex AI Search. The system then uses **Gemini 2.5 Flash** to intelligently parse the documents and `text-embedding-005` to create vectors for high-quality semantic search.
 *   **Cloud Run & Probot:** A serverless function runs our bot (built with Probot), which listens for PR webhooks from git providers to trigger the agent's security review.
 *   **GitHub Actions for CI/CD:** We established a full DevOps pipeline on GitHub to automate the deployment of our agent to Google Cloud. This effort paid off immensely, making our process repeatable, reliable, and ready for future iterations.
 

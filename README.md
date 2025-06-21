@@ -11,13 +11,13 @@
 
 - **Cybersecurity‑first PR workflows** – Automatically scans PRs for vulnerabilities and injects secure coding checks directly into your GitHub CI/CD pipeline.
 - **AI‑augmented security** – In an era where "vibe coding" is accelerating development, rapidly generated AI code often skips deep security scrutiny. Sentoru fills this gap by **automatically verifying, hardening, and generating tests** for AI-generated code—ensuring that fast innovation doesn't come at the cost of vulnerabilities.
-- **Automated Fixes & Pentests** – Goes beyond simple analysis by suggesting fixes as code commits and generating penetration tests to validate the solution's robustness.
+- **Automated Fixes & Pentests** – Goes beyond simple analysis by suggesting fixes as ◊◊code commits and generating penetration tests to validate the solution's robustness.
 - **Developer Control & Flexibility** – Sentoru doesn't force changes. You choose when its security suggestions, fixes, or attack tests are relevant—opting in or out on a per-PR or per-repository basis. You stay in command.
 
 ## Architecture
 
-![Architecture Diagram](docs/resources/architecture-diagram-v2.png) 
-*(This README reflects the latest architecture diagram provided)*
+![Architecture Diagram](docs/resources/architecture-diagram.png) 
+
 
 ## 🛡️ Why It Matters
 
@@ -57,7 +57,7 @@ In its current implementation, the Sentoru agent completes the full analysis-fix
 
 ### The RAG Knowledge Base
 
-The power of the `Analyst Agent` comes from its sophisticated knowledge base built on **Google Cloud's Vertex AI Search**. The pipeline uses **Gemini 2.5 Flash** to intelligently parse a vast corpus of security documents (OWASP Top 10, CWE, etc.) and vectorize them with the `text-embedding-005` model. Key documents like *Python Security Best Practices* were generated using Gemini's deep research capabilities, ensuring comprehensive and up-to-date knowledge.
+The power of the `Analyst Agent` comes from its sophisticated knowledge base built on **Google Cloud's Vertex AI Search**. The pipeline uses **Gemini 2.5 Flash** to intelligently parse a vast corpus of security documents (OWASP Top 10, CWE, etc.) stored in **Google Cloud Storage** and vectorize them with the text-embedding-005 model. Key documents like *Python Security Best Practices* were generated using **Gemini's Deep Research** capabilities, ensuring comprehensive and up-to-date knowledge.
 
 ## How Sentoru Stands Out
 
