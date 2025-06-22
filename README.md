@@ -179,3 +179,8 @@ To deploy Sentoru to production on Vertex AI:
 3. **Test locally first** with `USE_RAG=true` to validate the full RAG functionality works in your development environment.
 
 This limitation only affects the RAG-based vulnerability knowledge retrieval. All other security analysis features (Safety API vulnerability scanning, code fixing, and penetration test generation) work perfectly in both local and deployed environments.
+
+
+## 📜 Licensing
+
+This project is licensed under the **Apache License 2.0**. See the [LICENSE](LICENSE) file for full details.
