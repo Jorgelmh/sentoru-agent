@@ -1,7 +1,16 @@
-from fastapi import FastAPI
-
-app = FastAPI()
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+diff --git a/main.py b/main.py
+index 062670c..3f1b2a4 100644
+--- a/main.py
++++ b/main.py
+@@ -1,7 +1,11 @@
+ from fastapi import FastAPI
+ 
+ app = FastAPI()
+ 
+ @app.get("/")
+ def read_root():
+     return {"Hello": "World"}
++
++@app.get("/health")
++def health():
++    return {"status": "ok"}
