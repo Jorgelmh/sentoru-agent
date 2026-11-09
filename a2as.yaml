@@ -1,0 +1,303 @@
+manifest:
+  version: "0.1.3"
+  schema: https://a2as.org/cert/schema
+  subject:
+    name: jorgelmh/sentoru-agent
+    source: https://github.com/jorgelmh/sentoru-agent
+    branch: main
+    commit: "bb4a3bf0"
+    scope: [app/tools.py, app/agents/pentester_agent.py, app/agents/analyst_agent.py, app/agents/fixer_agent.py, app/__init__.py,
+      app/agent.py, app/utils/util.py, app/utils/typing.py, app/agent_engine_app.py]
+  issued:
+    by: A2AS.org
+    at: '2026-02-11T16:52:28Z'
+    url: https://a2as.org/certified/agents/jorgelmh/sentoru-agent
+  signatures:
+    digest: sha256:m09LT6SupSKOlRXmHwI_XTq0cHgI3maXhF3Ub2C4Wh0
+    key: ed25519:TdUh9WBU4mZsMfjMf9P2jeFCU8Mg5xUCCU6edpagiwQ
+    sig: ed25519:jmCBBys7KrieOol5wB8wBlkMRjf7iwFrHH1djQhXM5_UJe-UYMVHqLgBhTkxtnYyJsw7hZfoik7Wak_O9AQmDw
+
+agents:
+  analyst_agent:
+    type: instance
+    models: [gemini-2.0-flash]
+    tools: [get_safety_API_tool]
+    params:
+      name: AnalystAgent
+      instruction:
+        function: load_prompt
+        type: file_load
+        file: analyst_agent
+      description: Analyzes the codebase and identifies vulnerabilities.
+      output_key: analysis
+  fixer_agent:
+    type: instance
+    models: [gemini-2.0-flash]
+    params:
+      name: VulnerabilityFixerAgent
+      instruction:
+        function: load_prompt
+        type: file_load
+        file: fixer_agent
+      description: Suggests or generates code changes to fix detected vulnerabilities.
+      output_key: fixed_code_patches
+      before_agent_callback: [format_git_diff_cb]
+      output_schema: FixerAgentOutput
+  pentester_agent:
+    type: instance
+    models: [gemini-2.0-flash]
+    params:
+      name: PentesterAgent
+      instruction:
+        function: load_prompt
+        type: file_load
+        file: pentester_agent
+      description: Generates penetration tests to ensure the suggested code changes are secure.
+      output_key: pen_tests
+      output_schema: PenetrationTest
+  review_agent:
+    type: instance
+    params:
+      name: review_agent
+      before_agent_callback: add_git_diff_to_state
+      sub_agents: [analyst_agent, fixer_agent, pentester_agent]
+  root_agent:
+    type: instance
+    models: [gemini-2.0-flash]
+    tools: [get_orchestrator_agent_tools]
+    params:
+      name: root_agent
+      instruction:
+        function: load_prompt
+        type: file_load
+        file: orchestrator_agent
+      before_agent_callback: add_git_diff_to_state
+      sub_agents: [review_agent]
+  search_agent:
+    type: instance
+    models: [gemini-2.0-flash]
+    tools: [get_rag_vulnerability_knowledge_tool]
+    params:
+      name: SearchAgent
+      instruction:
+        function: load_prompt
+        type: file_load
+        file: search_agent
+      description: Searches for relevant cybersecurity vulnerability advise for mitigations.
+      output_key: search_report
+      function: get_orchestrator_agent_tools
+
+models:
+  gemini-2.0-flash:
+    type: literal
+    agents: [search_agent, pentester_agent, analyst_agent, fixer_agent, root_agent]
+
+tools:
+  get_orchestrator_agent_tools:
+    type: function
+    agents: [root_agent]
+    params:
+      dynamic: "True"
+      source: call
+      description: |-
+        Returns a list of AgentTool instances for the orchestrator agent.
+        If USE_RAG environment variable is set, returns the search_agent wrapped in AgentTool.
+        Otherwise, returns an empty list.
+
+        Returns:
+            List of AgentTool instances or empty list
+
+mcp:
+  MCPToolset:
+    type: network
+    url: https://mcp.safetycli.com/sse
+    params:
+      class: MCPToolset
+      connection_type: SseServerParams
+      headers:
+        Content-Type: application/json
+        Authorization: Bearer {safety_api_key}
+      function: get_safety_API_tool
+
+teams:
+  review_agent:
+    type: sequential
+    agents: [review_agent, analyst_agent, fixer_agent, pentester_agent]
+  root_agent:
+    type: hierarchy
+    agents: [root_agent, review_agent]
+
+imports:
+  add_git_diff_to_state: app.utils.util.add_git_diff_to_state
+  AdkApp: vertexai.preview.reasoning_engines.AdkApp
+  agent_engines: vertexai.agent_engines
+  AgentTool: google.adk.tools.agent_tool.AgentTool
+  analyst_agent: app.agents.analyst_agent.analyst_agent
+  Any: typing.Any
+  argparse: argparse
+  auth: google.auth
+  BaseModel: pydantic.BaseModel
+  CallbackContext: google.adk.agents.callback_context.CallbackContext
+  CloudTraceLoggingSpanExporter: app.utils.tracing.CloudTraceLoggingSpanExporter
+  create_bucket_if_not_exists: app.utils.gcs.create_bucket_if_not_exists
+  datetime: datetime
+  export: opentelemetry.sdk.trace.export
+  Feedback: app.utils.typing.Feedback
+  fixer_agent: app.agents.fixer_agent.fixer_agent
+  FixerAgentOutput: app.utils.typing.FixerAgentOutput
+  format_git_diff_cb: app.utils.util.format_git_diff_cb
+  get_orchestrator_agent_tools: app.tools.get_orchestrator_agent_tools
+  get_safety_API_tool: app.tools.get_safety_API_tool
+  google_cloud_logging: google.cloud.logging
+  json: json
+  Literal: typing.Literal
+  LlmAgent: google.adk.agents.LlmAgent
+  load_prompt: app.utils.util.load_prompt
+  logging: logging
+  Mapping: collections.abc.Mapping
+  MCPToolset: google.adk.tools.mcp_tool.mcp_toolset.MCPToolset
+  os: os
+  PatchSet: unidiff.PatchSet
+  Path: pathlib.Path
+  PenetrationTest: app.utils.typing.PenetrationTest
+  pentester_agent: app.agents.pentester_agent.pentester_agent
+  rag: vertexai.preview.rag
+  root_agent: app.agent.root_agent
+  Sequence: collections.abc.Sequence
+  SequentialAgent: google.adk.agents.SequentialAgent
+  SseServerParams: google.adk.tools.mcp_tool.mcp_session_manager.SseServerParams
+  trace: opentelemetry.trace
+  TracerProvider: opentelemetry.sdk.trace.TracerProvider
+  vertexai: vertexai
+  VertexAiRagRetrieval: google.adk.tools.retrieval.vertex_ai_rag_retrieval.VertexAiRagRetrieval
+
+functions:
+  add_git_diff_to_state:
+    type: sync
+    module: app.utils.util
+    args: [callback_context]
+    params:
+      returns: None
+  clone:
+    type: sync
+    module: app.agent_engine_app
+    args: [self]
+    params:
+      returns: AgentEngineApp
+  deploy_agent_engine_app:
+    type: sync
+    module: app.agent_engine_app
+    args: [project, location, agent_name, requirements_file, extra_packages, env_vars]
+    params:
+      returns: agent_engines.AgentEngine
+  format_git_diff_cb:
+    type: sync
+    module: app.utils.util
+    args: [callback_context]
+    params:
+      returns: None
+  format_patch_for_display:
+    type: sync
+    module: app.utils.util
+    args: [patch]
+    params:
+      returns: str
+  get_orchestrator_agent_tools:
+    type: sync
+    module: app.tools
+    params:
+      returns: list
+  get_rag_vulnerability_knowledge_tool:
+    type: sync
+    module: app.tools
+    params:
+      returns: VertexAiRagRetrieval
+  get_safety_API_tool:
+    type: sync
+    module: app.tools
+    params:
+      returns: MCPToolset
+  load_prompt:
+    type: sync
+    module: app.utils.util
+    args: [prompt_name]
+    params:
+      returns: str
+  register_feedback:
+    type: sync
+    module: app.agent_engine_app
+    args: [self, feedback]
+    params:
+      returns: None
+  register_operations:
+    type: sync
+    module: app.agent_engine_app
+    args: [self]
+    params:
+      returns: Mapping
+  set_up:
+    type: sync
+    module: app.agent_engine_app
+    args: [self]
+    params:
+      returns: None
+
+variables:
+  GOOGLE_CLOUD_PROJECT:
+    type: env
+    params:
+      caller: [os.environ.get]
+      path: [app.agent_engine_app]
+  SAFETY_API_KEY:
+    type: env
+    params:
+      caller: [os.environ.get]
+      path: [app.tools]
+  USE_RAG:
+    type: env
+    params:
+      caller: [os.environ.get]
+      path: [app.tools]
+  VULN_RAG_CORPUS:
+    type: env
+    params:
+      caller: [os.environ.get]
+      path: [app.tools]
+
+files:
+  .md:
+    type: literal
+    actions: [read]
+    params:
+      caller: [load_prompt]
+      path: [Path.parent.parent]
+  deployment_metadata.json:
+    type: literal
+    actions: [write]
+    params:
+      caller: [open]
+      alias: [f]
+      variable: config_file
+  prompt_path:
+    type: variable
+    actions: [read]
+    params:
+      caller: [open]
+      alias: [f]
+  requirements_file:
+    type: variable
+    actions: [read]
+    params:
+      caller: [open]
+      alias: [f]
+
+networks:
+  mcp.safetycli.com:
+    type: api
+    actions: [connect]
+    urls: [/sse]
+    protocols: [https]
+    ports: ["443"]
+    params:
+      caller: [McpToolset, get_safety_API_tool]
+      links: [MCPToolset, url]
